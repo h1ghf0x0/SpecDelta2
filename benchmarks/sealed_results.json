@@ -1,0 +1,267 @@
+{
+  "generatedAt": "2026-11-26T10:37:58.232Z",
+  "nodeVersion": "v22.23.5",
+  "totalDurationMs": 63923,
+  "peakRssMb": 728.9,
+  "corpusOverview": {
+    "manualsCount": 6,
+    "totalPages": 1734,
+    "totalExtractableChars": 3804273,
+    "totalScannedPages": 2,
+    "totalStrippedNoiseLines": 3070,
+    "totalSectionsDetected": 244,
+    "avgParsePagesPerSec": 84
+  },
+  "confidenceIntervals": {
+    "sealedSymmetricShiftFalsePositives": {
+      "events": 0,
+      "trials": 244,
+      "pointPct": 0,
+      "ci95TwoSidedPct": [
+        0,
+        1.5
+      ],
+      "oneSided95UpperPct": 1.2,
+      "summary": "0/244 (95% one-sided upper bound ≤ 1.2%; two-sided 95% CI 0.0–1.5%)"
+    },
+    "sealedOutlineCsiSectionRecall": {
+      "events": 41,
+      "trials": 41,
+      "pointPct": 100,
+      "ci95TwoSidedPct": [
+        91.4,
+        100
+      ],
+      "oneSided95UpperPct": 100,
+      "summary": "41/41 (100%; two-sided 95% CI 91.4–100%)"
+    },
+    "sealedOutlineCsiSectionMisses": {
+      "events": 0,
+      "trials": 41,
+      "pointPct": 0,
+      "ci95TwoSidedPct": [
+        0,
+        8.6
+      ],
+      "oneSided95UpperPct": 7,
+      "summary": "0/41 (95% one-sided upper bound ≤ 7%; two-sided 95% CI 0.0–8.6%)"
+    },
+    "sealedPlantedEditsCaught": {
+      "events": 58,
+      "trials": 59,
+      "pointPct": 98.3,
+      "ci95TwoSidedPct": [
+        90.9,
+        100
+      ],
+      "oneSided95UpperPct": 99.9,
+      "summary": "58/59 (98.3%; two-sided 95% CI 90.9–100%)"
+    },
+    "sealedPlantedEditsMissed": {
+      "events": 1,
+      "trials": 59,
+      "pointPct": 1.7,
+      "ci95TwoSidedPct": [
+        0,
+        9.1
+      ],
+      "oneSided95UpperPct": 7.8,
+      "summary": "1/59 (1.7%; two-sided 95% CI 0–9.1%)"
+    },
+    "sealedPlantedRiskFlagsMatched": {
+      "events": 55,
+      "trials": 55,
+      "pointPct": 100,
+      "ci95TwoSidedPct": [
+        93.5,
+        100
+      ],
+      "oneSided95UpperPct": 100,
+      "summary": "55/55 (100%; two-sided 95% CI 93.5–100%)"
+    },
+    "sealedPlantedUnchangedFalsePositives": {
+      "events": 0,
+      "trials": 27,
+      "pointPct": 0,
+      "ci95TwoSidedPct": [
+        0,
+        12.8
+      ],
+      "oneSided95UpperPct": 10.5,
+      "summary": "0/27 (95% one-sided upper bound ≤ 10.5%; two-sided 95% CI 0.0–12.8%)"
+    }
+  },
+  "suite1_sealedParserAndShift": {
+    "manualsCount": 6,
+    "totalPages": 1734,
+    "totalSectionsDetected": 244,
+    "outlineCheckedManuals": 3,
+    "outlineExpectedSections": 41,
+    "outlineMatchedSections": 41,
+    "outlineMissedSections": 0,
+    "symmetricShiftSectionsChecked": 244,
+    "symmetricShiftFalsePositives": 0,
+    "pageBaselineChangedPages": 1729,
+    "pageBaselineTotalPages": 1740,
+    "perDocument": [
+      {
+        "file": "01_ncdot_clay_pm.pdf",
+        "institution": "North Carolina Dept. of Transportation (NCDOT)",
+        "sha256Prefix": "7a45d2c2",
+        "sourceUrl": "https://connect.ncdot.gov/letting/Division%2014%20Letting/01%2010%202017%20SPECIAL%20LETTING/13283.01%20Clay%20Co.%20Maint%20Project%20Manual%20Vol%201.pdf",
+        "pages": 468,
+        "extractableChars": 1108114,
+        "scannedPagesCount": 2,
+        "parseMs": 7844,
+        "pagesPerSec": 60,
+        "strippedLines": 1383,
+        "detectedSectionsCount": 61,
+        "outlineCsiBookmarksCount": 0,
+        "outlineCsiBookmarksMissed": [],
+        "shiftTest": {
+          "origPages": 468,
+          "shiftedPages": 469,
+          "sectionsChecked": 61,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "pageBaselineChangedPages": 469,
+          "pageBaselineTotalPages": 469
+        }
+      },
+      {
+        "file": "02_llnl_div01_pm.pdf",
+        "institution": "Lawrence Livermore National Laboratory (LLNL)",
+        "sha256Prefix": "901244f3",
+        "sourceUrl": "https://procurement.llnl.gov/sites/procurement/files/2025-09/Division%2001%20General%20Requirements%20for%20Construction.pdf",
+        "pages": 185,
+        "extractableChars": 444750,
+        "scannedPagesCount": 0,
+        "parseMs": 2212,
+        "pagesPerSec": 84,
+        "strippedLines": 779,
+        "detectedSectionsCount": 23,
+        "outlineCsiBookmarksCount": 18,
+        "outlineCsiBookmarksMissed": [],
+        "shiftTest": {
+          "origPages": 185,
+          "shiftedPages": 186,
+          "sectionsChecked": 23,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "pageBaselineChangedPages": 186,
+          "pageBaselineTotalPages": 186
+        }
+      },
+      {
+        "file": "03_maconbibb_specs.pdf",
+        "institution": "Macon-Bibb County, Georgia",
+        "sha256Prefix": "bb6e391f",
+        "sourceUrl": "https://www.maconbibb.us/wp-content/uploads/2020/05/Attachment-B-Specifications-1.pdf",
+        "pages": 180,
+        "extractableChars": 389073,
+        "scannedPagesCount": 0,
+        "parseMs": 1750,
+        "pagesPerSec": 103,
+        "strippedLines": 252,
+        "detectedSectionsCount": 32,
+        "outlineCsiBookmarksCount": 7,
+        "outlineCsiBookmarksMissed": [],
+        "shiftTest": {
+          "origPages": 180,
+          "shiftedPages": 181,
+          "sectionsChecked": 32,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "pageBaselineChangedPages": 181,
+          "pageBaselineTotalPages": 181
+        }
+      },
+      {
+        "file": "04_uoregon_div26.pdf",
+        "institution": "University of Oregon (CPFM)",
+        "sha256Prefix": "2808e832",
+        "sourceUrl": "https://cpfm.uoregon.edu/sites/default/files/_division_26_combined_123021.pdf",
+        "pages": 42,
+        "extractableChars": 66240,
+        "scannedPagesCount": 0,
+        "parseMs": 712,
+        "pagesPerSec": 59,
+        "strippedLines": 82,
+        "detectedSectionsCount": 17,
+        "outlineCsiBookmarksCount": 16,
+        "outlineCsiBookmarksMissed": [],
+        "shiftTest": {
+          "origPages": 42,
+          "shiftedPages": 43,
+          "sectionsChecked": 17,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "pageBaselineChangedPages": 42,
+          "pageBaselineTotalPages": 43
+        }
+      },
+      {
+        "file": "05_ca_dgs_24235656.pdf",
+        "institution": "California Dept. of General Services (Book II)",
+        "sha256Prefix": "b00024dc",
+        "sourceUrl": "https://www.dgs.ca.gov/-/media/Divisions/OBAS/Plans-and-Specs/24-235656/2-142452--Project-Manual-Book-II.pdf",
+        "pages": 764,
+        "extractableChars": 1650649,
+        "scannedPagesCount": 0,
+        "parseMs": 7389,
+        "pagesPerSec": 103,
+        "strippedLines": 426,
+        "detectedSectionsCount": 81,
+        "outlineCsiBookmarksCount": 0,
+        "outlineCsiBookmarksMissed": [],
+        "shiftTest": {
+          "origPages": 764,
+          "shiftedPages": 765,
+          "sectionsChecked": 81,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "pageBaselineChangedPages": 755,
+          "pageBaselineTotalPages": 765
+        }
+      },
+      {
+        "file": "06_osu_kelley_add1.pdf",
+        "institution": "Oregon State University (Kelley Engineering Addendum 1)",
+        "sha256Prefix": "5d2a6a53",
+        "sourceUrl": "https://bid.oregonstate.edu/opportunity/viewFile/48782/Kelley%20Engineering%202nd%20Floor%20Remodel%20ITB%202024-012757%20Addendum%201%20Exhibit%20G%20Specifications.pdf?1694037911",
+        "pages": 95,
+        "extractableChars": 145447,
+        "scannedPagesCount": 0,
+        "parseMs": 812,
+        "pagesPerSec": 117,
+        "strippedLines": 148,
+        "detectedSectionsCount": 30,
+        "outlineCsiBookmarksCount": 0,
+        "outlineCsiBookmarksMissed": [],
+        "shiftTest": {
+          "origPages": 95,
+          "shiftedPages": 96,
+          "sectionsChecked": 30,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "pageBaselineChangedPages": 96,
+          "pageBaselineTotalPages": 96
+        }
+      }
+    ]
+  },
+  "suite2_sealedPlantedEdits": {
+    "sourceSectionsSampled": 84,
+    "basePages": 174,
+    "addendumPages": 171,
+    "diffMs": 169,
+    "unchangedSectionsAudited": 27,
+    "falsePositiveSectionCount": 0,
+    "falsePositiveSections": [],
+    "plantedEditsTotal": 59,
+    "plantedEditsCaught": 58,
+    "plantedEditsMissed": 1,
+    "riskFlagsExpected": 55,
+    "riskFlagsMatched": 55
+  }
+}

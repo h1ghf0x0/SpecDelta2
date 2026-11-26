@@ -13,7 +13,8 @@
     "test": "tsx --test tests/*.test.ts src/tests/*.test.ts",
     "benchmark": "tsx scripts/benchmark.ts",
     "benchmark:real": "tsx scripts/realCorpusBenchmark.ts",
-    "benchmark:heldout": "tsx scripts/heldoutCorpusBenchmark.ts"
+    "benchmark:heldout": "tsx scripts/heldoutCorpusBenchmark.ts",
+    "benchmark:sealed": "tsx scripts/sealedCorpusBenchmark.ts"
   },
   "dependencies": {
     "@google/genai": "^3.6.1",

@@ -250,22 +250,41 @@ export function chunkIntoCsiSections(
   const csiCandidatesPerPage = new Map<number, number>();
   const tocPages = new Set<number>();
 
+  const tocHeadingPages = new Set<number>();
+  const pagesWithPart1Body = new Set<number>();
+
+  const isStandaloneTocHeading = (text: string): boolean => {
+    const t = text.trim();
+    if (/^(?:\d+[.)]|[A-Z]\.)\s+/.test(t)) return false;
+    return /^(?:(?:SECTION|DOCUMENT)\s+00\s+01\s+10\b.*|(?:PROJECT\s+MANUAL\s+)?(?:TABLE\s+OF\s+CONTENTS|LIST\s+OF\s+SECTIONS|INDEX\s+OF\s+SECTIONS)(?:\s*[-–—:]\s*.*|\s*\(.*\))?)\s*$/i.test(
+      t
+    );
+  };
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const prevText = i > 0 && lines[i - 1].page === line.page ? lines[i - 1].text : undefined;
-    if (/\b(?:TABLE\s+OF\s+CONTENTS|LIST\s+OF\s+SECTIONS|INDEX\s+OF\s+SECTIONS)\b/i.test(line.text)) {
-      tocPages.add(line.page);
+    if (isStandaloneTocHeading(line.text)) {
+      tocHeadingPages.add(line.page);
+    }
+    if (/^PART\s+1(?:\b|\s*[-–—])/i.test(line.text.trim())) {
+      pagesWithPart1Body.add(line.page);
     }
     const m = matchCsiHeader(line.text, prevText);
     if (m) {
       csiCandidatesPerPage.set(line.page, (csiCandidatesPerPage.get(line.page) ?? 0) + 1);
-      if (m.isExplicit || !tocPages.has(line.page)) {
+      if (m.isExplicit || !tocHeadingPages.has(line.page)) {
         pagesWithInlineHeaders.add(line.page);
       }
     }
   }
   for (const [pg, cnt] of csiCandidatesPerPage.entries()) {
     if (cnt >= 5) {
+      tocPages.add(pg);
+    }
+  }
+  for (const pg of tocHeadingPages) {
+    if ((csiCandidatesPerPage.get(pg) ?? 0) >= 2 || !pagesWithPart1Body.has(pg)) {
       tocPages.add(pg);
     }
   }

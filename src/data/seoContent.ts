@@ -252,97 +252,102 @@ export const SEO_PAGES: Record<Exclude<AppRoute, '/' | '/split-spec-book'>, SeoP
   '/benchmark': {
     route: '/benchmark',
     category: 'Benchmark',
-    metaTitle: 'Benchmark: Real & Held-Out Project Manual Corpus Results | SpecDelta',
+    metaTitle: 'Benchmark: Real, Held-Out & Sealed Project Manual Corpus Results | SpecDelta',
     metaDescription:
-      'Measured counts and Clopper-Pearson 95% confidence intervals across 10 real corpus PDFs (227p), 11 held-out public manuals (6,315p), and a 603-page stress run.',
-    eyebrow: 'Benchmark Study · Real Corpus (227p) & Held-Out Public Manuals (6,315p)',
+      'Measured counts and Clopper-Pearson 95% confidence intervals across 6 sealed manuals (1,734p), 11 held-out manuals (6,315p), 10 real corpus PDFs (227p), and a 603p stress run.',
+    eyebrow: 'Benchmark Study · Sealed (1,734p), Held-Out (6,315p) & Real Corpus (227p)',
     headline: 'Measured Accuracy, Counts & Confidence Intervals Across Real Project Manuals',
     summary:
-      'Reproducible measurements with exact Clopper-Pearson 95% confidence intervals (statsCi.ts) across three suites: (1) npm run benchmark:real on 10 public PDFs (227 pages: 21/21 CSI sections detected, 0/20 verbatim shift false positives, 12/12 edits caught [95% CI 73.5–100%; 0/12 misses, <= 22.1% one-sided upper bound]); (2) npm run benchmark:heldout on 11 unseen public manuals totaling 6,315 pages (230/234 bookmark-grounded CSI sections matched [98.3%, 95% CI 95.7–99.5%], 6/637 unseen verbatim-shift false positives [0.9%, 95% CI 0.3–2.0%], 0/111 false positives on the full 1,046-page Dover NH volume, and 22/23 held-out planted edits caught [95.7%, 95% CI 78.1–99.9%]); and (3) our 603-page stress run (2.9s total, 24/24 shifted sections unchanged). Scanned raster sheets without OCR are flagged with No-OCR warnings rather than silently diffed.',
+      'Reproducible measurements with exact Clopper-Pearson 95% confidence intervals (statsCi.ts) across four suites: (1) npm run benchmark:sealed on 6 fresh public manuals never used for tuning (1,734p: 41/41 bookmark CSI sections matched [100%, 95% CI 91.4–100%], 0/244 symmetric shift false positives [<= 1.2% upper bound], 58/59 planted edits caught [98.3%, 95% CI 90.9–100%]); (2) npm run benchmark:heldout on 11 manuals (6,315p: 233/234 bookmark sections matched [99.6%], 0/644 unseen & 0/111 Dover symmetric shift false positives, 6/318 asymmetric bookmark warnings flagged 6/6 times, 109/110 planted edits caught [99.1%, 95% CI 95.0–100%]); (3) npm run benchmark:real on 10 PDFs (227p: 12/12 edits caught [95% CI 73.5–100%]); and (4) 603p stress (2.8s, 221 pages/sec) plus 1,984p UNT memory profile (540.4 MB RSS / 270.3 MB JS heap).',
     heroImage: 'desk',
     heroImageAlt: 'Specification benchmark desk setup with Project Manual and structural sheets',
     keyGotchas: [
       {
-        title: '01. Held-Out Unseen Manuals (5,269 Pages + 1,046p Dover Vol. 1)',
+        title: '01. Sealed 6-Manual Release Set (1,734 Pages — Never Tuned On)',
         detail:
-          'Evaluated unmodified on 10 unseen U.S. public manuals (637 CSI sections, 28 scanned pages flagged): 230/234 bookmark-grounded CSI sections matched across 6 outlined manuals (98.3%, 95% CI 95.7–99.5%; 4/234 missed), 6/637 verbatim shift false positives (0.9%, 95% CI 0.3–2.0%, all in 09_cmich_pm.pdf), and 0/111 shift false positives on full 1,046-page Dover NH (<= 2.7% one-sided upper bound).',
+          'Evaluated after finalizing all parser fixes across NCDOT, LLNL, Macon-Bibb GA, Univ. of Oregon, CA DGS Book II, and OSU Kelley Addendum 1 (244 CSI sections, 2 scanned pages flagged, 84 pages/sec): 41/41 bookmark-grounded sections matched (<= 7.0% miss upper bound), 0/244 symmetric verbatim shift false positives (<= 1.2% upper bound vs. 1,729/1,740 raw pages), 58/59 planted edits caught (98.3%, 95% CI 90.9–100%), and 0/27 unchanged false positives (<= 10.5% upper bound).',
       },
       {
-        title: '02. Tuned 10-PDF Corpus & Clopper-Pearson Intervals',
+        title: '02. Held-Out 11 Manuals (6,315p), Bookmark Asymmetry & 1,984p Memory Profile',
         detail:
-          'On the 227-page corpus (benchmarks/real_corpus_results.json): 21/21 CSI sections detected (0/21 false splits & 0/21 misses, <= 13.3% 95% upper bound), 0/20 verbatim shift false positives across 210 shifted pages (<= 13.9% upper bound vs. 217/217 raw pages), and 12/12 edits caught (95% CI 73.5–100%; 0/12 misses, <= 22.1% upper bound).',
+          'Across 10 held-out manuals (5,269p, 644 CSI sections) + full 1,046p Dover NH: 233/234 bookmark sections matched (99.6%, 95% CI 97.6–100%; 1/234 OSU source typo 01 35 00 vs. 01300), 0/644 unseen & 0/111 Dover symmetric shift false positives (<= 0.5% / <= 2.7% upper bounds), and 6/318 false positives isolated strictly to asymmetric outlined-vs-unoutlined PDFs (flagged 6/6 times by bookmarkAsymmetryWarning). Parsing the 1,984-page UNT manual peaks at 540.4 MB RSS / 270.3 MB JS heap.',
       },
       {
-        title: '03. Held-Out Planted Edits & Stress Throughput',
+        title: '03. 110 Held-Out Planted Edits & 10-PDF Baseline Corpus',
         detail:
-          'Across 23 controlled edits injected into 40 sampled unseen sections from all 10 held-out manuals: 22/23 edits caught (95.7%, 95% CI 78.1–99.9%; 1/23 missed where 00 01 07 folded into front matter), 20/21 risk flags matched (95.2%), and 1/19 unchanged false positive (5.3%). On the 603-page stress fixture, parse + diff completed in 2.9s (211 pages/sec).',
+          'Scaling held-out planted edits to 110 edits across 150 sampled sections tightened intervals to 109/110 caught (99.1%, 95% CI 95.0–100%; 1/110 missed on 13 30 00), 101/102 risk flags matched (99.0%), and 1/45 unchanged false positive (2.2% on 23 31 13). Baseline 227p corpus stays 21/21 sections, 0/20 shift false positives, 12/12 edits (95% CI 73.5–100%), and 0/10 unchanged false positives.',
       },
     ],
     howToSteps: [
       {
-        step: 'Reproduce the Held-Out 6,315-Page Benchmark',
+        step: 'Reproduce the Sealed 1,734-Page Release Set',
         description:
-          'Run npm run benchmark:heldout to download and SHA-256 verify all 11 public manuals listed in benchmarks/heldout/NOTICE.md and regenerate benchmarks/heldout_results.json.',
+          'Run npm run benchmark:sealed to download and SHA-256 verify the 6 untouched public manuals in benchmarks/sealed/NOTICE.md and regenerate benchmarks/sealed_results.json.',
       },
       {
-        step: 'Audit the Committed 227-Page Real Corpus',
+        step: 'Reproduce Held-Out 6,315-Page & 227-Page Benchmarks',
         description:
-          'All 10 baseline PDFs live in benchmarks/corpus/. Run npm run benchmark:real to regenerate benchmarks/real_corpus_results.json with Clopper-Pearson 95% intervals.',
+          'Run npm run benchmark:heldout and npm run benchmark:real to verify symmetric vs. asymmetric bookmark shift checks, 110 planted edits, and Clopper-Pearson 95% intervals.',
       },
       {
         step: 'Verify Live in the Browser & Export Redlines',
         description:
-          'Click "Load Sample Spec" in SpecDelta to test the 15-page fixture locally, inspect any No-OCR page banners, and export the .xlsx Change Log for estimator sign-off.',
+          'Click "Load Sample Spec" in SpecDelta to test locally, review any No-OCR or Asymmetric Bookmark banners, and export the .xlsx Change Log.',
       },
     ],
     benchmarkTable: [
       {
-        metric: 'Held-Out Bookmark CSI Recall (6 Outlined Manuals)',
+        metric: 'Sealed Release Set Bookmark Recall (1,734p / 6 Manuals)',
         bluebeam: 'Manual bookmark / page navigation',
         llmChat: 'Unstructured context chunking',
-        specDelta: '230/234 matched (98.3% · 95% CI 95.7–99.5%)',
+        specDelta: '41/41 matched (100% · 95% CI 91.4–100% · <= 7.0% miss bound)',
       },
       {
-        metric: 'Held-Out Verbatim Shift (5,269 Unseen Pages)',
-        bluebeam: 'Page-by-page overlay (5,249/5,279 pages shifted)',
+        metric: 'Sealed Release Set Symmetric Shift (244 Sections)',
+        bluebeam: 'Page-by-page overlay (1,729/1,740 pages shifted)',
         llmChat: 'Full text re-prompted',
-        specDelta: '6/637 false positives (0.9% · 95% CI 0.3–2.0%)',
+        specDelta: '0/244 false positives (<= 1.2% 95% upper bound)',
       },
       {
-        metric: 'Full 1,046-Page Dover NH Verbatim Shift',
-        bluebeam: 'Page-by-page overlay (1,047/1,047 pages)',
-        llmChat: 'Context-window truncation risk',
-        specDelta: '0/111 false positives (<= 2.7% 95% upper bound)',
-      },
-      {
-        metric: 'Held-Out Planted Edits (40 Unseen Sections)',
+        metric: 'Sealed Release Set Planted Edits (59 Edits / 84 Sections)',
         bluebeam: 'Visual redline review required',
         llmChat: 'Probabilistic summary',
-        specDelta: '22/23 caught (95.7% · 95% CI 78.1–99.9%)',
+        specDelta: '58/59 caught (98.3% · 95% CI 90.9–100%)',
       },
       {
-        metric: 'Tuned 10-PDF Real Corpus (227p / 12 Edits)',
+        metric: 'Held-Out Bookmark CSI Recall & Symmetric Shift (6,315p)',
+        bluebeam: 'Manual navigation (6,296/6,326 pages shifted)',
+        llmChat: 'Context-window truncation risk',
+        specDelta: '233/234 recall (99.6%) · 0/644 unseen & 0/111 Dover shift FPs',
+      },
+      {
+        metric: 'Held-Out Planted Edits (110 Edits / 150 Unseen Sections)',
         bluebeam: 'Visual redline review required',
         llmChat: 'Probabilistic summary',
-        specDelta: '12/12 caught (95% CI 73.5–100% · <= 22.1% miss bound)',
+        specDelta: '109/110 caught (99.1% · 95% CI 95.0–100%)',
       },
       {
-        metric: '603-Page Multi-Division Stress Throughput',
-        bluebeam: 'Local desktop render per page',
-        llmChat: 'Context-window truncation risk',
-        specDelta: '2.9s total (211 pages/sec) · 24/24 shifted unchanged',
+        metric: 'Scale Footprint (1,984p UNT Manual & 603p Stress Fixture)',
+        bluebeam: 'Desktop render per page',
+        llmChat: 'Token limit exceeded',
+        specDelta: '1,984p: 540.4 MB RSS / 270.3 MB heap · 603p: 2.8s (221 p/s)',
       },
     ],
     faqs: [
       {
-        question: 'Why report Clopper-Pearson confidence intervals instead of only percentages?',
+        question: 'Why separate the held-out tuning validation from a sealed release set?',
         answer:
-          'Small sample counts like 12/12 edits caught have wide uncertainty (95% CI 73.5–100%; 0/12 misses corresponds to a 95% one-sided upper bound of 22.1%). Reporting exact Clopper-Pearson binomial intervals from src/utils/statsCi.ts alongside the larger 6,315-page held-out run keeps every claim grounded in sample size.',
+          'Once a defect (like the 3 prose Table-of-Contents suppressions found in held-out manuals) is diagnosed and fixed, those manuals become part of development tuning. Keeping the 6-manual, 1,734-page sealed set strictly untouched until all parser edits are complete gives an honest measure on unseen data.',
       },
       {
-        question: 'Were any regexes or parser rules tuned on the 11 held-out manuals?',
+        question: 'Why does SpecDelta warn when only one PDF has CSI outline bookmarks?',
         answer:
-          'No. scripts/heldoutCorpusBenchmark.ts runs the unmodified production parser, noise stripper, and Myers diff engine on the 11 SHA-256-verified public PDFs in benchmarks/heldout/NOTICE.md and reports every miss and false positive directly into benchmarks/heldout_results.json.',
+          'In held-out testing on Central Michigan (09_cmich_pm.pdf), comparing an outlined PDF against a copy stripped of outlines caused 6/318 asymmetric false positives, whereas symmetric outlines produced 0/644. SpecDelta surfaces an Asymmetric PDF Bookmarks banner whenever only one file contains CSI outline bookmarks.',
+      },
+      {
+        question: 'Why report Clopper-Pearson confidence intervals alongside counts?',
+        answer:
+          'Small counts like 12/12 edits caught have wide uncertainty (95% CI 73.5–100%; <= 22.1% one-sided miss upper bound). Tightening sample sizes to 110 held-out edits and 59 sealed edits shrinks intervals (95.0–100% and 90.9–100%) and reports every miss and false positive openly.',
       },
     ],
     ctaLabel: 'Run the Sample Benchmark Live',

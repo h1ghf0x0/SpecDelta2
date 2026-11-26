@@ -529,4 +529,62 @@ test('clopperPearsonStats computes exact binomial confidence intervals and one-s
   assert.equal(fp21.oneSided95UpperPct, 13.3);
 });
 
+test('chunkIntoCsiSections preserves spec sections mentioning Table of Contents in body prose', () => {
+  const lines = [
+    { page: 1, yPct: 0.12, text: 'SECTION 01 29 00' },
+    { page: 1, yPct: 0.16, text: 'PAYMENT PROCEDURES' },
+    { page: 1, yPct: 0.22, text: 'PART 1 GENERAL' },
+    { page: 1, yPct: 0.28, text: '1.01 FORMAT' },
+    { page: 1, yPct: 0.34, text: 'C. Format: Utilize Table of Contents of this Project Manual.' },
+    { page: 2, yPct: 0.12, text: 'SECTION 01 77 00 - CONTRACT CLOSEOUT' },
+    { page: 2, yPct: 0.20, text: 'PART 1 - GENERAL' },
+    { page: 2, yPct: 0.28, text: '1. Table of Contents' },
+  ];
+
+  const { sections } = chunkIntoCsiSections(lines, 2, new Map());
+  assert.deepEqual(
+    sections.map((s) => s.normalizedCode),
+    ['01 29 00', '01 77 00']
+  );
+  assert.equal(sections[0].title, 'PAYMENT PROCEDURES');
+  assert.equal(sections[1].title, 'CONTRACT CLOSEOUT');
+});
+
+test('compareParsedBooks sets bookmarkAsymmetryWarning only when one book has CSI outline bookmarks', () => {
+  const makeBook = (fileName: string, outlineBookmarkCount: number): SingleSpecParseOutput => ({
+    fileName,
+    pageCount: 2,
+    parseTimeMs: 10,
+    scannedWarning: false,
+    strippedPatterns: [],
+    outlineBookmarkCount,
+    sections: [
+      {
+        id: '03 30 00__0',
+        rawCode: 'SECTION 03 30 00',
+        normalizedCode: '03 30 00',
+        division: '03',
+        divisionTitle: 'Concrete',
+        title: 'CAST-IN-PLACE CONCRETE',
+        startPage: 1,
+        endPage: 2,
+        text: 'Minimum 4,000 psi.',
+        paragraphs: ['Minimum 4,000 psi.'],
+      },
+    ],
+  });
+
+  const symZero = compareParsedBooks(makeBook('A.pdf', 0), makeBook('B.pdf', 0));
+  assert.equal(symZero.diagnostics.bookmarkAsymmetryWarning, false);
+
+  const symBoth = compareParsedBooks(makeBook('A.pdf', 12), makeBook('B.pdf', 14));
+  assert.equal(symBoth.diagnostics.bookmarkAsymmetryWarning, false);
+
+  const asym = compareParsedBooks(makeBook('A.pdf', 12), makeBook('B.pdf', 0));
+  assert.equal(asym.diagnostics.bookmarkAsymmetryWarning, true);
+  assert.equal(asym.diagnostics.oldOutlineBookmarkCount, 12);
+  assert.equal(asym.diagnostics.newOutlineBookmarkCount, 0);
+});
+
+
 

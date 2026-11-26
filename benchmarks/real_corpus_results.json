@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-26T10:13:12.330Z",
+  "generatedAt": "2026-11-26T10:35:42.353Z",
   "nodeVersion": "v22.23.5",
-  "totalDurationMs": 9861,
-  "peakRssMb": 493.9,
+  "totalDurationMs": 11500,
+  "peakRssMb": 600.8,
   "corpusOverview": {
     "pdfCount": 10,
     "specBodyPdfCount": 8,
@@ -59,14 +59,14 @@
     },
     "consolidatedUnchangedFalsePositives": {
       "events": 0,
-      "trials": 9,
+      "trials": 10,
       "pointPct": 0,
       "ci95TwoSidedPct": [
         0,
-        33.6
+        30.8
       ],
-      "oneSided95UpperPct": 28.3,
-      "summary": "0/9 (95% one-sided upper bound ≤ 28.3%; two-sided 95% CI 0.0–33.6%)"
+      "oneSided95UpperPct": 25.9,
+      "summary": "0/10 (95% one-sided upper bound ≤ 25.9%; two-sided 95% CI 0.0–30.8%)"
     },
     "plantedRealEditsCaught": {
       "events": 12,
@@ -117,7 +117,7 @@
         "documentType": "single-section-spec",
         "pages": 50,
         "extractableChars": 138930,
-        "parseMs": 1573,
+        "parseMs": 2278,
         "strippedLines": 192,
         "expectedSections": [
           "03 30 00"
@@ -136,7 +136,7 @@
         "documentType": "single-section-spec",
         "pages": 5,
         "extractableChars": 9637,
-        "parseMs": 121,
+        "parseMs": 187,
         "strippedLines": 20,
         "expectedSections": [
           "01 21 00"
@@ -155,7 +155,7 @@
         "documentType": "single-section-spec",
         "pages": 33,
         "extractableChars": 82531,
-        "parseMs": 327,
+        "parseMs": 372,
         "strippedLines": 132,
         "expectedSections": [
           "04 20 00"
@@ -174,7 +174,7 @@
         "documentType": "single-section-spec",
         "pages": 7,
         "extractableChars": 14447,
-        "parseMs": 47,
+        "parseMs": 50,
         "strippedLines": 28,
         "expectedSections": [
           "05 31 23"
@@ -193,7 +193,7 @@
         "documentType": "single-section-spec",
         "pages": 10,
         "extractableChars": 23454,
-        "parseMs": 103,
+        "parseMs": 120,
         "strippedLines": 49,
         "expectedSections": [
           "07 14 13"
@@ -212,7 +212,7 @@
         "documentType": "single-section-spec",
         "pages": 5,
         "extractableChars": 7590,
-        "parseMs": 69,
+        "parseMs": 73,
         "strippedLines": 5,
         "expectedSections": [
           "03 30 00"
@@ -231,7 +231,7 @@
         "documentType": "single-section-spec",
         "pages": 4,
         "extractableChars": 6174,
-        "parseMs": 37,
+        "parseMs": 89,
         "strippedLines": 12,
         "expectedSections": [
           "03 30 00"
@@ -250,7 +250,7 @@
         "documentType": "multi-section-manual",
         "pages": 100,
         "extractableChars": 234650,
-        "parseMs": 1000,
+        "parseMs": 1234,
         "strippedLines": 290,
         "expectedSections": [
           "00 01 05",
@@ -295,7 +295,7 @@
         "documentType": "toc-document",
         "pages": 5,
         "extractableChars": 8094,
-        "parseMs": 59,
+        "parseMs": 65,
         "strippedLines": 20,
         "expectedSections": [],
         "detectedSections": [],
@@ -310,7 +310,7 @@
         "documentType": "toc-document",
         "pages": 8,
         "extractableChars": 9417,
-        "parseMs": 81,
+        "parseMs": 117,
         "strippedLines": 24,
         "expectedSections": [],
         "detectedSections": [],
@@ -398,9 +398,9 @@
     "basePages": 179,
     "addendumPages": 176,
     "baseParagraphsTotal": 1437,
-    "diffMs": 78,
-    "totalSectionsCompared": 21,
-    "unchangedSectionsExpected": 9,
+    "diffMs": 54,
+    "totalSectionsCompared": 22,
+    "unchangedSectionsExpected": 10,
     "falsePositiveSections": [],
     "falsePositiveSectionCount": 0,
     "falsePositiveRatePct": 0,

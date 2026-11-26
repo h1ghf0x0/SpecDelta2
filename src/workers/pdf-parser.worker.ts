@@ -113,6 +113,8 @@ async function extractLinesWithCoordinates(
   const loadingTask = pdfjsLib.getDocument({
     data: new Uint8Array(buffer),
     useWorkerFetch: false,
+    disableFontFace: true,
+    useSystemFonts: false,
   });
   const pdf = await loadingTask.promise;
   try {
@@ -217,6 +219,11 @@ self.onmessage = async (event: MessageEvent<ParsePdfRequest>) => {
 
     postProgress(requestId, 'complete', 100, 'Parsed cleanly.');
 
+    let outlineBookmarkCount = 0;
+    for (const hints of outlineHintsByPage.values()) {
+      outlineBookmarkCount += hints.length;
+    }
+
     const result: SingleSpecParseOutput = {
       fileName,
       pageCount,
@@ -228,6 +235,7 @@ self.onmessage = async (event: MessageEvent<ParsePdfRequest>) => {
       scannedPages,
       isMostlyScanned,
       outlineHintsUsed,
+      outlineBookmarkCount,
       appliedNoiseConfig: noiseConfig,
     };
 

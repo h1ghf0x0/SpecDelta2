@@ -15,7 +15,6 @@ import { compareParsedBooks } from '../src/utils/specDiffEngine.ts';
 import { clopperPearsonStats, type BinomialRateStats } from '../src/utils/statsCi.ts';
 import {
   DEFAULT_NOISE_CONFIG,
-  type CsiSection,
   type SingleSpecParseOutput,
 } from '../src/types/spec.ts';
 
@@ -147,9 +146,8 @@ function sha256Hex(bytes: Uint8Array): string {
 async function ensureHeldoutPdf(
   heldoutDir: string,
   entry: HeldoutManifestEntry
-): Promise<{ filePath: string; bytes: Uint8Array; sha256: string; downloaded: boolean }> {
+): Promise<{ filePath: string; bytes: Uint8Array; sha256: string }> {
   const filePath = path.join(heldoutDir, entry.file);
-  let downloaded = false;
 
   if (!fs.existsSync(filePath)) {
     console.log(`Downloading ${entry.file} from ${entry.sourceUrl} ...`);
@@ -163,7 +161,6 @@ async function ensureHeldoutPdf(
     }
     const buf = new Uint8Array(await res.arrayBuffer());
     fs.writeFileSync(filePath, buf);
-    downloaded = true;
   }
 
   const bytes = new Uint8Array(fs.readFileSync(filePath));
@@ -174,7 +171,7 @@ async function ensureHeldoutPdf(
     );
   }
 
-  return { filePath, bytes, sha256: hash, downloaded };
+  return { filePath, bytes, sha256: hash };
 }
 
 async function extractOutlineHints(
@@ -227,95 +224,137 @@ async function extractOutlineHints(
   return hintMap;
 }
 
+function shiftOutlineHints(
+  origHints: Map<number, OutlineSectionHint[]>,
+  pageDelta: number
+): Map<number, OutlineSectionHint[]> {
+  const shifted = new Map<number, OutlineSectionHint[]>();
+  for (const [page, list] of origHints.entries()) {
+    const newPage = page + pageDelta;
+    shifted.set(
+      newPage,
+      list.map((h) => ({ ...h, page: newPage }))
+    );
+  }
+  return shifted;
+}
+
 interface ParsedHeldoutPdf {
   book: SingleSpecParseOutput;
   rawPageTexts: string[];
   extractableChars: number;
   scannedPages: number[];
+  outlineHintsByPage: Map<number, OutlineSectionHint[]>;
   outlineCsiCodes: string[];
   parseMs: number;
 }
 
 async function parseHeldoutPdfBuffer(
   bytes: Uint8Array,
-  fileName: string
+  fileName: string,
+  options?: {
+    overrideOutlineHints?: Map<number, OutlineSectionHint[]>;
+    skipOutlineExtraction?: boolean;
+  }
 ): Promise<ParsedHeldoutPdf> {
   const start = performance.now();
-  const doc = await pdfjsLib.getDocument({
+  const loadingTask = pdfjsLib.getDocument({
     data: new Uint8Array(bytes),
     verbosity: 0,
     disableFontFace: true,
     useSystemFonts: false,
-  }).promise;
+  });
+  const doc = await loadingTask.promise;
 
-  const outlineHintsByPage = await extractOutlineHints(doc);
-  const outlineCodeSet = new Set<string>();
-  for (const list of outlineHintsByPage.values()) {
-    for (const h of list) {
-      if (/^\d{2}\s\d{2}\s\d{2}$/.test(h.normalizedCode) && !h.normalizedCode.endsWith('00 00')) {
-        outlineCodeSet.add(h.normalizedCode);
+  try {
+    const outlineHintsByPage = options?.overrideOutlineHints
+      ? options.overrideOutlineHints
+      : options?.skipOutlineExtraction
+        ? new Map<number, OutlineSectionHint[]>()
+        : await extractOutlineHints(doc);
+
+    const outlineCodeSet = new Set<string>();
+    let outlineBookmarkCount = 0;
+    for (const list of outlineHintsByPage.values()) {
+      outlineBookmarkCount += list.length;
+      for (const h of list) {
+        if (/^\d{2}\s\d{2}\s\d{2}$/.test(h.normalizedCode) && !h.normalizedCode.endsWith('00 00')) {
+          outlineCodeSet.add(h.normalizedCode);
+        }
       }
     }
-  }
 
-  const rawLines: RawPageLine[] = [];
-  const rawPageTexts: string[] = [];
-  const scannedPages: number[] = [];
-  let extractableChars = 0;
+    const rawLines: RawPageLine[] = [];
+    const rawPageTexts: string[] = [];
+    const scannedPages: number[] = [];
+    let extractableChars = 0;
 
-  for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
-    const page = await doc.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 1.0 });
-    const textContent = await page.getTextContent();
-    const { lines, pageChars } = assemblePageLinesFromSpans(
-      textContent.items,
-      pageNum,
-      viewport.height || 792
+    for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
+      const page = await doc.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 1.0 });
+      const textContent = await page.getTextContent();
+      const { lines, pageChars } = assemblePageLinesFromSpans(
+        textContent.items,
+        pageNum,
+        viewport.height || 792
+      );
+      rawLines.push(...lines);
+      rawPageTexts.push(lines.map((l) => l.text).join('\n'));
+      extractableChars += pageChars;
+
+      if (pageChars < 30) {
+        let hasImageOp = false;
+        try {
+          const opList = await page.getOperatorList();
+          hasImageOp = opList.fnArray.some((op) => IMAGE_PAINT_OPS.has(op));
+        } catch {
+          hasImageOp = pageChars === 0;
+        }
+        if (hasImageOp) {
+          scannedPages.push(pageNum);
+        }
+      }
+
+      page.cleanup();
+    }
+
+    const { cleanLines, strippedPatterns, strippedLineCount } = stripHeadersAndFooters(
+      rawLines,
+      doc.numPages,
+      DEFAULT_NOISE_CONFIG
     );
-    rawLines.push(...lines);
-    rawPageTexts.push(lines.map((l) => l.text).join('\n'));
-    extractableChars += pageChars;
+    const { sections, outlineHintsUsed } = chunkIntoCsiSections(
+      cleanLines,
+      doc.numPages,
+      outlineHintsByPage
+    );
+    const parseMs = Math.round(performance.now() - start);
+    await doc.cleanup();
 
-    if (pageChars < 30) {
-      let hasImageOp = false;
-      try {
-        const opList = await page.getOperatorList();
-        hasImageOp = opList.fnArray.some((op) => IMAGE_PAINT_OPS.has(op));
-      } catch {
-        hasImageOp = pageChars === 0;
-      }
-      if (hasImageOp) {
-        scannedPages.push(pageNum);
-      }
-    }
-  }
-
-  const { cleanLines, strippedPatterns, strippedLineCount } = stripHeadersAndFooters(
-    rawLines,
-    doc.numPages,
-    DEFAULT_NOISE_CONFIG
-  );
-  const { sections } = chunkIntoCsiSections(cleanLines, doc.numPages, outlineHintsByPage);
-  const parseMs = Math.round(performance.now() - start);
-  await doc.cleanup();
-
-  return {
-    book: {
-      fileName,
-      pageCount: doc.numPages,
-      parseTimeMs: parseMs,
-      scannedWarning: scannedPages.length > 0 && extractableChars / Math.max(1, doc.numPages) < 120,
+    return {
+      book: {
+        fileName,
+        pageCount: doc.numPages,
+        parseTimeMs: parseMs,
+        scannedWarning:
+          scannedPages.length > 0 && extractableChars / Math.max(1, doc.numPages) < 120,
+        scannedPages,
+        strippedPatterns,
+        strippedLineCount,
+        outlineHintsUsed,
+        outlineBookmarkCount,
+        sections,
+      },
+      rawPageTexts,
+      extractableChars,
       scannedPages,
-      strippedPatterns,
-      strippedLineCount,
-      sections,
-    },
-    rawPageTexts,
-    extractableChars,
-    scannedPages,
-    outlineCsiCodes: Array.from(outlineCodeSet).sort(),
-    parseMs,
-  };
+      outlineHintsByPage,
+      outlineCsiCodes: Array.from(outlineCodeSet).sort(),
+      parseMs,
+    };
+  } finally {
+    await loadingTask.destroy();
+  }
 }
 
 function countPageByPageDifferences(
@@ -449,82 +488,113 @@ async function renderExtractedSectionsToPdf(
   return pdfDoc.save();
 }
 
-async function runShiftImmunityCheck(
+async function runSymmetricAndAsymmetricShiftChecks(
   entry: HeldoutManifestEntry,
   bytes: Uint8Array,
   origParsed: ParsedHeldoutPdf
 ): Promise<{
-  tested: boolean;
-  skipReason?: string;
-  origPages: number;
-  shiftedPages: number;
-  sectionsChecked: number;
-  sectionFalsePositives: number;
-  falsePositiveCodes: string[];
-  pageBaselineChangedPages: number;
-  pageBaselineTotalPages: number;
+  symmetricWithOutlines: {
+    origPages: number;
+    shiftedPages: number;
+    sectionsChecked: number;
+    sectionFalsePositives: number;
+    falsePositiveCodes: string[];
+    pageBaselineChangedPages: number;
+    pageBaselineTotalPages: number;
+  };
+  asymmetricBookmarkedVsUnbookmarked: {
+    tested: boolean;
+    sectionsChecked: number;
+    sectionFalsePositives: number;
+    falsePositiveCodes: string[];
+    warningTriggered: boolean;
+  };
 }> {
-  try {
-    const srcPdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
-    const shiftedPdf = await PDFDocument.create();
-    const cover = shiftedPdf.addPage([612, 792]);
-    const bold = await shiftedPdf.embedFont(StandardFonts.HelveticaBold);
-    cover.drawText('DOCUMENT 00 00 10 - ADDENDUM 01 COVER NOTICE', {
+  const srcPdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+  const shiftedPdf = await PDFDocument.create();
+  const cover = shiftedPdf.addPage([612, 792]);
+  const bold = await shiftedPdf.embedFont(StandardFonts.HelveticaBold);
+  cover.drawText('DOCUMENT 00 00 10 - ADDENDUM 01 COVER NOTICE', {
+    x: 54,
+    y: 720,
+    size: 12,
+    font: bold,
+    color: rgb(0.1, 0.1, 0.1),
+  });
+  cover.drawText(
+    `Held-out verbatim page-shift verification notice inserted before ${entry.file}.`,
+    {
       x: 54,
-      y: 720,
-      size: 12,
+      y: 696,
+      size: 9.5,
       font: bold,
-      color: rgb(0.1, 0.1, 0.1),
-    });
-    cover.drawText(
-      `Held-out verbatim page-shift verification notice inserted before ${entry.file}.`,
-      {
-        x: 54,
-        y: 696,
-        size: 9.5,
-        font: bold,
-        color: rgb(0.2, 0.2, 0.2),
-      }
+      color: rgb(0.2, 0.2, 0.2),
+    }
+  );
+  const copied = await shiftedPdf.copyPages(srcPdf, srcPdf.getPageIndices());
+  for (const pg of copied) shiftedPdf.addPage(pg);
+
+  const shiftedBytes = await shiftedPdf.save();
+
+  // 1. Symmetric shift: preserve outline hints shifted by +1 page (equivalent to a re-bookmarked Addendum)
+  const shiftedHints = shiftOutlineHints(origParsed.outlineHintsByPage, 1);
+  const shiftedSymmetricParsed = await parseHeldoutPdfBuffer(
+    shiftedBytes,
+    `shifted_${entry.file}`,
+    { overrideOutlineHints: shiftedHints }
+  );
+
+  const symDiff = compareParsedBooks(origParsed.book, shiftedSymmetricParsed.book);
+  const symAudited = symDiff.results.filter(
+    (r) => r.sectionCode !== '00 00 10' && r.sectionCode !== '00 01 00'
+  );
+  const symFp = symAudited.filter((r) => r.status !== 'unchanged');
+  const baseline = countPageByPageDifferences(
+    origParsed.rawPageTexts,
+    shiftedSymmetricParsed.rawPageTexts
+  );
+
+  // 2. Asymmetric bookmark scenario: bookmarked Baseline vs. un-bookmarked Addendum (pdf-lib strips outline)
+  let asymRes = {
+    tested: false,
+    sectionsChecked: 0,
+    sectionFalsePositives: 0,
+    falsePositiveCodes: [] as string[],
+    warningTriggered: false,
+  };
+
+  if ((origParsed.book.outlineBookmarkCount ?? 0) > 0) {
+    const shiftedNoOutlines = await parseHeldoutPdfBuffer(
+      shiftedBytes,
+      `shifted_no_outline_${entry.file}`,
+      { skipOutlineExtraction: true }
     );
-    const copied = await shiftedPdf.copyPages(srcPdf, srcPdf.getPageIndices());
-    for (const pg of copied) shiftedPdf.addPage(pg);
-
-    const shiftedBytes = await shiftedPdf.save();
-    const shiftedParsed = await parseHeldoutPdfBuffer(shiftedBytes, `shifted_${entry.file}`);
-
-    const diff = compareParsedBooks(origParsed.book, shiftedParsed.book);
-    const audited = diff.results.filter(
+    const asymDiff = compareParsedBooks(origParsed.book, shiftedNoOutlines.book);
+    const asymAudited = asymDiff.results.filter(
       (r) => r.sectionCode !== '00 00 10' && r.sectionCode !== '00 01 00'
     );
-    const falsePositives = audited.filter((r) => r.status !== 'unchanged');
-    const baseline = countPageByPageDifferences(
-      origParsed.rawPageTexts,
-      shiftedParsed.rawPageTexts
-    );
-
-    return {
+    const asymFp = asymAudited.filter((r) => r.status !== 'unchanged');
+    asymRes = {
       tested: true,
-      origPages: origParsed.book.pageCount,
-      shiftedPages: shiftedParsed.book.pageCount,
-      sectionsChecked: audited.length,
-      sectionFalsePositives: falsePositives.length,
-      falsePositiveCodes: falsePositives.map((r) => `${r.sectionCode}:${r.status}`),
-      pageBaselineChangedPages: baseline.changedPages,
-      pageBaselineTotalPages: baseline.comparedPages,
-    };
-  } catch (err) {
-    return {
-      tested: false,
-      skipReason: err instanceof Error ? err.message : String(err),
-      origPages: origParsed.book.pageCount,
-      shiftedPages: 0,
-      sectionsChecked: 0,
-      sectionFalsePositives: 0,
-      falsePositiveCodes: [],
-      pageBaselineChangedPages: 0,
-      pageBaselineTotalPages: 0,
+      sectionsChecked: asymAudited.length,
+      sectionFalsePositives: asymFp.length,
+      falsePositiveCodes: asymFp.map((r) => `${r.sectionCode}:${r.status}`),
+      warningTriggered: Boolean(asymDiff.diagnostics.bookmarkAsymmetryWarning),
     };
   }
+
+  return {
+    symmetricWithOutlines: {
+      origPages: origParsed.book.pageCount,
+      shiftedPages: shiftedSymmetricParsed.book.pageCount,
+      sectionsChecked: symAudited.length,
+      sectionFalsePositives: symFp.length,
+      falsePositiveCodes: symFp.map((r) => `${r.sectionCode}:${r.status}`),
+      pageBaselineChangedPages: baseline.changedPages,
+      pageBaselineTotalPages: baseline.comparedPages,
+    },
+    asymmetricBookmarkedVsUnbookmarked: asymRes,
+  };
 }
 
 interface PlantedHeldoutEdit {
@@ -541,44 +611,12 @@ async function main() {
   const heldoutDir = path.resolve(process.cwd(), 'benchmarks', 'heldout');
   fs.mkdirSync(heldoutDir, { recursive: true });
 
-  console.log('Verifying & parsing 11 held-out PDFs from benchmarks/heldout/NOTICE.md ...');
+  console.log('Verifying & running symmetric + asymmetric checks on 11 held-out PDFs...');
 
-  const parsedEntries: Array<{
-    entry: HeldoutManifestEntry;
-    bytes: Uint8Array;
-    sha256: string;
-    parsed: ParsedHeldoutPdf;
-  }> = [];
+  let doverSummary: Record<string, unknown> | null = null;
+  let doverSymSectionsChecked = 0;
+  let doverSymFalsePositives = 0;
 
-  for (const entry of HELDOUT_MANIFEST) {
-    const { bytes, sha256 } = await ensureHeldoutPdf(heldoutDir, entry);
-    const parsed = await parseHeldoutPdfBuffer(bytes, entry.file);
-    if (parsed.book.pageCount !== entry.expectedPages) {
-      throw new Error(
-        `Page count mismatch for ${entry.file}: expected ${entry.expectedPages}, got ${parsed.book.pageCount}`
-      );
-    }
-    const bodySections = parsed.book.sections.filter((s) => s.normalizedCode !== '00 01 00');
-    console.log(
-      `  ✓ ${entry.file} (${parsed.book.pageCount}p, ${bodySections.length} CSI sections, ${parsed.scannedPages.length} scanned pages, ${parsed.parseMs}ms, sha256:${sha256.slice(0, 8)})`
-    );
-    parsedEntries.push({ entry, bytes, sha256, parsed });
-  }
-
-  const doverEntry = parsedEntries.find((p) => p.entry.role === 'full-scale-dover')!;
-  const unseenEntries = parsedEntries.filter((p) => p.entry.role === 'unseen-manual');
-
-  // Suite 1: Full 1,046-page Dover NH volume + verbatim shift
-  const doverBodySections = doverEntry.parsed.book.sections.filter(
-    (s) => s.normalizedCode !== '00 01 00'
-  );
-  const doverShift = await runShiftImmunityCheck(
-    doverEntry.entry,
-    doverEntry.bytes,
-    doverEntry.parsed
-  );
-
-  // Suite 2: 10 Unseen Manuals (5,269 pages) — parser telemetry, outline recall, & verbatim shift
   let unseenTotalPages = 0;
   let unseenTotalChars = 0;
   let unseenTotalScannedPages = 0;
@@ -591,64 +629,17 @@ async function main() {
   let outlineMatchedTotal = 0;
   let outlineMissedTotal = 0;
 
-  let unseenShiftSectionsChecked = 0;
-  let unseenShiftFalsePositives = 0;
+  let unseenSymShiftSectionsChecked = 0;
+  let unseenSymShiftFalsePositives = 0;
   let unseenShiftBaselineChangedPages = 0;
   let unseenShiftBaselineTotalPages = 0;
 
+  let asymBookmarkedManualsCount = 0;
+  let asymSectionsChecked = 0;
+  let asymFalsePositives = 0;
+  let asymWarningsTriggered = 0;
+
   const unseenPerDocument = [];
-
-  for (const item of unseenEntries) {
-    const bodySections = item.parsed.book.sections.filter((s) => s.normalizedCode !== '00 01 00');
-    const detectedSet = new Set(bodySections.map((s) => s.normalizedCode));
-
-    unseenTotalPages += item.parsed.book.pageCount;
-    unseenTotalChars += item.parsed.extractableChars;
-    unseenTotalScannedPages += item.parsed.scannedPages.length;
-    unseenTotalStrippedLines += item.parsed.book.strippedLineCount ?? 0;
-    unseenTotalParseMs += item.parsed.parseMs;
-    unseenTotalSectionsDetected += bodySections.length;
-
-    let outlineMissedCodes: string[] = [];
-    if (item.parsed.outlineCsiCodes.length > 0) {
-      outlineCheckedManuals++;
-      outlineExpectedTotal += item.parsed.outlineCsiCodes.length;
-      const missed = item.parsed.outlineCsiCodes.filter((c) => !detectedSet.has(c));
-      outlineMissedCodes = missed;
-      outlineMatchedTotal += item.parsed.outlineCsiCodes.length - missed.length;
-      outlineMissedTotal += missed.length;
-    }
-
-    const shiftRes = await runShiftImmunityCheck(item.entry, item.bytes, item.parsed);
-    if (shiftRes.tested) {
-      unseenShiftSectionsChecked += shiftRes.sectionsChecked;
-      unseenShiftFalsePositives += shiftRes.sectionFalsePositives;
-      unseenShiftBaselineChangedPages += shiftRes.pageBaselineChangedPages;
-      unseenShiftBaselineTotalPages += shiftRes.pageBaselineTotalPages;
-    }
-
-    unseenPerDocument.push({
-      file: item.entry.file,
-      institution: item.entry.institution,
-      sha256Prefix: item.sha256.slice(0, 8),
-      sourceUrl: item.entry.sourceUrl,
-      pages: item.parsed.book.pageCount,
-      extractableChars: item.parsed.extractableChars,
-      scannedPagesCount: item.parsed.scannedPages.length,
-      parseMs: item.parsed.parseMs,
-      pagesPerSec: Math.round(
-        (item.parsed.book.pageCount / Math.max(1, item.parsed.parseMs)) * 1000
-      ),
-      strippedLines: item.parsed.book.strippedLineCount ?? 0,
-      detectedSectionsCount: bodySections.length,
-      outlineCsiBookmarksCount: item.parsed.outlineCsiCodes.length,
-      outlineCsiBookmarksMissed: outlineMissedCodes,
-      shiftTest: shiftRes,
-    });
-  }
-
-  // Suite 3: Planted real-clause edits sampled across ALL 10 unseen manuals
-  // Pick up to 4 non-empty sections from each unseen manual (avoiding duplicate section codes)
   const usedCodes = new Set<string>();
   const sampledBaseSections: Array<{
     sourceFile: string;
@@ -658,35 +649,124 @@ async function main() {
     paragraphs: string[];
   }> = [];
 
-  for (const item of unseenEntries) {
-    const candidates = item.parsed.book.sections.filter(
-      (s) =>
-        s.normalizedCode !== '00 01 00' &&
-        s.paragraphs.length >= 4 &&
-        !usedCodes.has(s.normalizedCode)
+  // Process manuals sequentially and release raw PDF bytes immediately to keep memory bounded
+  for (const entry of HELDOUT_MANIFEST) {
+    const { bytes, sha256 } = await ensureHeldoutPdf(heldoutDir, entry);
+    const parsed = await parseHeldoutPdfBuffer(bytes, entry.file);
+
+    if (parsed.book.pageCount !== entry.expectedPages) {
+      throw new Error(
+        `Page count mismatch for ${entry.file}: expected ${entry.expectedPages}, got ${parsed.book.pageCount}`
+      );
+    }
+
+    const bodySections = parsed.book.sections.filter((s) => s.normalizedCode !== '00 01 00');
+    const shiftOut = await runSymmetricAndAsymmetricShiftChecks(entry, bytes, parsed);
+    const rssAfterDocMb = Math.round((process.memoryUsage().rss / (1024 * 1024)) * 10) / 10;
+
+    console.log(
+      `  ✓ ${entry.file} (${parsed.book.pageCount}p, ${bodySections.length} CSI sections, symFP=${shiftOut.symmetricWithOutlines.sectionFalsePositives}/${shiftOut.symmetricWithOutlines.sectionsChecked}, asymFP=${shiftOut.asymmetricBookmarkedVsUnbookmarked.sectionFalsePositives}, rss=${rssAfterDocMb}MB)`
     );
-    let pickedForDoc = 0;
-    for (const sec of candidates) {
-      if (pickedForDoc >= 4) break;
-      const cleanParagraphs = sec.paragraphs
-        .map(sanitizeForWinAnsi)
-        .filter((p) => p.length >= 25)
-        .slice(0, 12);
-      if (cleanParagraphs.length < 3) continue;
-      usedCodes.add(sec.normalizedCode);
-      sampledBaseSections.push({
-        sourceFile: item.entry.file,
-        code: sec.normalizedCode,
-        rawHeader: sec.normalizedCode.startsWith('00 ')
-          ? `DOCUMENT ${sec.normalizedCode}`
-          : `SECTION ${sec.normalizedCode}`,
-        title: sanitizeForWinAnsi(sec.title) || 'GENERAL REQUIREMENTS',
-        paragraphs: cleanParagraphs,
+
+    if (entry.role === 'full-scale-dover') {
+      doverSymSectionsChecked = shiftOut.symmetricWithOutlines.sectionsChecked;
+      doverSymFalsePositives = shiftOut.symmetricWithOutlines.sectionFalsePositives;
+      doverSummary = {
+        file: entry.file,
+        sha256Prefix: sha256.slice(0, 8),
+        pages: parsed.book.pageCount,
+        extractableChars: parsed.extractableChars,
+        scannedPagesCount: parsed.scannedPages.length,
+        parseMs: parsed.parseMs,
+        parsePagesPerSec: Math.round((parsed.book.pageCount / Math.max(1, parsed.parseMs)) * 1000),
+        strippedLines: parsed.book.strippedLineCount ?? 0,
+        detectedSectionsCount: bodySections.length,
+        outlineCsiBookmarksCount: parsed.outlineCsiCodes.length,
+        rssAfterDocMb,
+        shiftTest: shiftOut.symmetricWithOutlines,
+        asymmetricBookmarkTest: shiftOut.asymmetricBookmarkedVsUnbookmarked,
+      };
+    } else {
+      const detectedSet = new Set(bodySections.map((s) => s.normalizedCode));
+
+      unseenTotalPages += parsed.book.pageCount;
+      unseenTotalChars += parsed.extractableChars;
+      unseenTotalScannedPages += parsed.scannedPages.length;
+      unseenTotalStrippedLines += parsed.book.strippedLineCount ?? 0;
+      unseenTotalParseMs += parsed.parseMs;
+      unseenTotalSectionsDetected += bodySections.length;
+
+      let outlineMissedCodes: string[] = [];
+      if (parsed.outlineCsiCodes.length > 0) {
+        outlineCheckedManuals++;
+        outlineExpectedTotal += parsed.outlineCsiCodes.length;
+        const missed = parsed.outlineCsiCodes.filter((c) => !detectedSet.has(c));
+        outlineMissedCodes = missed;
+        outlineMatchedTotal += parsed.outlineCsiCodes.length - missed.length;
+        outlineMissedTotal += missed.length;
+      }
+
+      unseenSymShiftSectionsChecked += shiftOut.symmetricWithOutlines.sectionsChecked;
+      unseenSymShiftFalsePositives += shiftOut.symmetricWithOutlines.sectionFalsePositives;
+      unseenShiftBaselineChangedPages += shiftOut.symmetricWithOutlines.pageBaselineChangedPages;
+      unseenShiftBaselineTotalPages += shiftOut.symmetricWithOutlines.pageBaselineTotalPages;
+
+      if (shiftOut.asymmetricBookmarkedVsUnbookmarked.tested) {
+        asymBookmarkedManualsCount++;
+        asymSectionsChecked += shiftOut.asymmetricBookmarkedVsUnbookmarked.sectionsChecked;
+        asymFalsePositives += shiftOut.asymmetricBookmarkedVsUnbookmarked.sectionFalsePositives;
+        if (shiftOut.asymmetricBookmarkedVsUnbookmarked.warningTriggered) {
+          asymWarningsTriggered++;
+        }
+      }
+
+      // Sample up to 15 clean sections per unseen manual (excluding 00 01 00 front-matter) for 100+ edit suite
+      const candidates = bodySections.filter(
+        (s) => s.paragraphs.length >= 3 && !usedCodes.has(s.normalizedCode)
+      );
+      let pickedForDoc = 0;
+      for (const sec of candidates) {
+        if (pickedForDoc >= 15) break;
+        const cleanParagraphs = sec.paragraphs
+          .map(sanitizeForWinAnsi)
+          .filter((p) => p.length >= 25)
+          .slice(0, 8);
+        if (cleanParagraphs.length < 2) continue;
+        usedCodes.add(sec.normalizedCode);
+        sampledBaseSections.push({
+          sourceFile: entry.file,
+          code: sec.normalizedCode,
+          rawHeader: sec.normalizedCode.startsWith('00 ')
+            ? `DOCUMENT ${sec.normalizedCode}`
+            : `SECTION ${sec.normalizedCode}`,
+          title: sanitizeForWinAnsi(sec.title) || 'GENERAL REQUIREMENTS',
+          paragraphs: cleanParagraphs,
+        });
+        pickedForDoc++;
+      }
+
+      unseenPerDocument.push({
+        file: entry.file,
+        institution: entry.institution,
+        sha256Prefix: sha256.slice(0, 8),
+        sourceUrl: entry.sourceUrl,
+        pages: parsed.book.pageCount,
+        extractableChars: parsed.extractableChars,
+        scannedPagesCount: parsed.scannedPages.length,
+        parseMs: parsed.parseMs,
+        pagesPerSec: Math.round((parsed.book.pageCount / Math.max(1, parsed.parseMs)) * 1000),
+        strippedLines: parsed.book.strippedLineCount ?? 0,
+        detectedSectionsCount: bodySections.length,
+        outlineCsiBookmarksCount: parsed.outlineCsiCodes.length,
+        outlineCsiBookmarksMissed: outlineMissedCodes,
+        rssAfterDocMb,
+        shiftTest: shiftOut.symmetricWithOutlines,
+        asymmetricBookmarkTest: shiftOut.asymmetricBookmarkedVsUnbookmarked,
       });
-      pickedForDoc++;
     }
   }
 
+  // Suite 3: 100+ Held-Out Planted Real-Clause Edits across all 10 unseen manuals (excluding 00 01 00 consistently)
   sampledBaseSections.sort((a, b) => a.code.localeCompare(b.code));
   const addendumSections = sampledBaseSections.map((s) => ({
     ...s,
@@ -695,7 +775,6 @@ async function main() {
 
   const plantedEdits: PlantedHeldoutEdit[] = [];
 
-  // Plant 2 distinct edits per unseen manual where possible (20+ edits total)
   const clauseTemplates: Array<{
     label: string;
     appendText: string;
@@ -726,21 +805,26 @@ async function main() {
       appendText: ' Assembly shall maintain a 2-hour UL fire-resistance rating and 65 kAIC interrupting rating.',
       riskSubstring: '2-hour',
     },
+    {
+      label: 'liquidated_damages_and_percentage',
+      appendText: ' Delay liquidated damages of $2,500 per calendar day apply; retainage shall not exceed 5%.',
+      riskSubstring: '$2,500',
+    },
   ];
 
-  // Apply 2 modifications per unseen manual (first 2 sections picked from each manual)
+  // Apply up to 10 modifications per unseen manual (~100 modified sections across 10 manuals)
   let templateIdx = 0;
-  for (const item of unseenEntries) {
-    const docSections = addendumSections.filter((s) => s.sourceFile === item.entry.file);
-    for (let j = 0; j < Math.min(2, docSections.length); j++) {
+  for (const entry of HELDOUT_MANIFEST.filter((e) => e.role === 'unseen-manual')) {
+    const docSections = addendumSections.filter((s) => s.sourceFile === entry.file);
+    for (let j = 0; j < Math.min(10, docSections.length); j++) {
       const target = docSections[j];
       const tpl = clauseTemplates[templateIdx % clauseTemplates.length];
       templateIdx++;
       const pIdx = Math.min(1, target.paragraphs.length - 1);
       target.paragraphs[pIdx] = `${target.paragraphs[pIdx]}${tpl.appendText}`;
       plantedEdits.push({
-        id: `H_${item.entry.file}_${target.code.replace(/\s+/g, '')}_${tpl.label}`,
-        sourceFile: item.entry.file,
+        id: `H_${entry.file}_${target.code.replace(/\s+/g, '')}_${tpl.label}`,
+        sourceFile: entry.file,
         sectionCode: target.code,
         type: 'modified',
         expectedRiskFlagSubstring: tpl.riskSubstring,
@@ -748,56 +832,74 @@ async function main() {
     }
   }
 
-  // Plus 1 deleted section, 1 renumbered section, and 1 added section from the sampled unseen pool
-  const thirdSectionPool = addendumSections.filter(
+  // Plus 4 deleted sections, 4 renumbered sections, and 2 added sections from remaining sampled pool
+  const untouchedPool = addendumSections.filter(
     (s) => !plantedEdits.some((e) => e.sectionCode === s.code)
   );
-  if (thirdSectionPool.length >= 2) {
-    const toDelete = thirdSectionPool[0];
+  const deleteTargets = untouchedPool.slice(0, 4);
+  for (const toDelete of deleteTargets) {
     const delIdx = addendumSections.findIndex((s) => s.code === toDelete.code);
-    addendumSections.splice(delIdx, 1);
-    plantedEdits.push({
-      id: `H_${toDelete.sourceFile}_${toDelete.code.replace(/\s+/g, '')}_deleted`,
-      sourceFile: toDelete.sourceFile,
-      sectionCode: toDelete.code,
-      type: 'deleted',
-    });
-
-    const toRenumber = thirdSectionPool[1];
-    const origCode = toRenumber.code;
-    const newCode = origCode.slice(0, 6) + '99';
-    if (!usedCodes.has(newCode)) {
-      toRenumber.code = newCode;
-      toRenumber.rawHeader = newCode.startsWith('00 ')
-        ? `DOCUMENT ${newCode}`
-        : `SECTION ${newCode}`;
+    if (delIdx !== -1) {
+      addendumSections.splice(delIdx, 1);
       plantedEdits.push({
-        id: `H_${toRenumber.sourceFile}_${origCode.replace(/\s+/g, '')}_renumbered`,
-        sourceFile: toRenumber.sourceFile,
-        sectionCode: origCode,
-        renumberedTo: newCode,
-        type: 'renumbered',
+        id: `H_${toDelete.sourceFile}_${toDelete.code.replace(/\s+/g, '')}_deleted`,
+        sourceFile: toDelete.sourceFile,
+        sectionCode: toDelete.code,
+        type: 'deleted',
       });
     }
   }
 
-  const addedCode = '49 99 99';
-  addendumSections.push({
-    sourceFile: 'synthetic-heldout-addendum',
-    code: addedCode,
-    rawHeader: `SECTION ${addedCode}`,
-    title: 'ADDENDUM TEMPORARY UTILITY METERING',
-    paragraphs: [
-      '1.1 Contractor shall furnish and install temporary utility metering with minimum 100-psi rated valves and $12,500 allowance.',
+  let renumberedAdded = 0;
+  for (const candidate of untouchedPool.slice(4)) {
+    if (renumberedAdded >= 4) break;
+    const origCode = candidate.code;
+    const newCode = origCode.slice(0, 6) + '98';
+    if (usedCodes.has(newCode)) continue;
+    usedCodes.add(newCode);
+    candidate.code = newCode;
+    candidate.rawHeader = newCode.startsWith('00 ')
+      ? `DOCUMENT ${newCode}`
+      : `SECTION ${newCode}`;
+    plantedEdits.push({
+      id: `H_${candidate.sourceFile}_${origCode.replace(/\s+/g, '')}_renumbered`,
+      sourceFile: candidate.sourceFile,
+      sectionCode: origCode,
+      renumberedTo: newCode,
+      type: 'renumbered',
+    });
+    renumberedAdded++;
+  }
+
+  for (const [addedCode, title, text, riskSub] of [
+    [
+      '49 99 98',
+      'ADDENDUM TEMPORARY POWER TAP',
+      '1.1 Contractor shall provide temporary 400A generator tap with minimum 65 kAIC breaker and $15,000 allowance.',
+      '$15,000',
     ],
-  });
-  plantedEdits.push({
-    id: 'H_added_499999',
-    sourceFile: 'synthetic-heldout-addendum',
-    sectionCode: addedCode,
-    type: 'added',
-    expectedRiskFlagSubstring: '$12,500',
-  });
+    [
+      '49 99 99',
+      'ADDENDUM TEMPORARY UTILITY METERING',
+      '1.1 Contractor shall furnish and install temporary utility metering with minimum 100-psi rated valves and $12,500 allowance.',
+      '$12,500',
+    ],
+  ] as const) {
+    addendumSections.push({
+      sourceFile: 'synthetic-heldout-addendum',
+      code: addedCode,
+      rawHeader: `SECTION ${addedCode}`,
+      title,
+      paragraphs: [text],
+    });
+    plantedEdits.push({
+      id: `H_added_${addedCode.replace(/\s+/g, '')}`,
+      sourceFile: 'synthetic-heldout-addendum',
+      sectionCode: addedCode,
+      type: 'added',
+      expectedRiskFlagSubstring: riskSub,
+    });
+  }
 
   addendumSections.sort((a, b) => a.code.localeCompare(b.code));
 
@@ -806,8 +908,10 @@ async function main() {
     renderExtractedSectionsToPdf(addendumSections, 'HELDOUT 10-MANUAL SAMPLE ADDENDUM', 'ADDENDUM 01'),
   ]);
   const [baseParsed, addendumParsed] = await Promise.all([
-    parseHeldoutPdfBuffer(basePdfBytes, 'HeldoutSample_Base.pdf'),
-    parseHeldoutPdfBuffer(addendumPdfBytes, 'HeldoutSample_Addendum01.pdf'),
+    parseHeldoutPdfBuffer(basePdfBytes, 'HeldoutSample_Base.pdf', { skipOutlineExtraction: true }),
+    parseHeldoutPdfBuffer(addendumPdfBytes, 'HeldoutSample_Addendum01.pdf', {
+      skipOutlineExtraction: true,
+    }),
   ]);
 
   const plantedDiffStart = performance.now();
@@ -861,19 +965,24 @@ async function main() {
     });
   }
 
+  // Exclude 00 01 00 pseudo-section consistently with realCorpusBenchmark.ts & benchmark.test.ts
   const unchangedAudited = plantedDiff.results.filter(
-    (r) => !expectedChangedMap.has(r.sectionCode)
+    (r) => r.sectionCode !== '00 01 00' && !expectedChangedMap.has(r.sectionCode)
   );
   const plantedFalsePositives = unchangedAudited.filter((r) => r.status !== 'unchanged');
 
   const stats: Record<string, BinomialRateStats> = {
     doverFullScaleShiftFalsePositives: clopperPearsonStats(
-      doverShift.sectionFalsePositives,
-      doverShift.sectionsChecked
+      doverSymFalsePositives,
+      doverSymSectionsChecked
     ),
-    unseenManualsShiftFalsePositives: clopperPearsonStats(
-      unseenShiftFalsePositives,
-      unseenShiftSectionsChecked
+    unseenManualsSymmetricShiftFalsePositives: clopperPearsonStats(
+      unseenSymShiftFalsePositives,
+      unseenSymShiftSectionsChecked
+    ),
+    unseenAsymmetricBookmarkShiftFalsePositives: clopperPearsonStats(
+      asymFalsePositives,
+      asymSectionsChecked
     ),
     unseenOutlineCsiSectionRecall: clopperPearsonStats(outlineMatchedTotal, outlineExpectedTotal),
     unseenOutlineCsiSectionMisses: clopperPearsonStats(outlineMissedTotal, outlineExpectedTotal),
@@ -894,8 +1003,8 @@ async function main() {
     totalDurationMs: Math.round(performance.now() - suiteStart),
     peakRssMb: rssMb,
     corpusOverview: {
-      fullScaleDoverPages: doverEntry.parsed.book.pageCount,
-      unseenManualsCount: unseenEntries.length,
+      fullScaleDoverPages: 1046,
+      unseenManualsCount: 10,
       unseenTotalPages,
       unseenTotalExtractableChars: unseenTotalChars,
       unseenTotalScannedPages,
@@ -906,31 +1015,21 @@ async function main() {
       ),
     },
     confidenceIntervals: stats,
-    suite1_fullScaleDover1046p: {
-      file: doverEntry.entry.file,
-      sha256Prefix: doverEntry.sha256.slice(0, 8),
-      pages: doverEntry.parsed.book.pageCount,
-      extractableChars: doverEntry.parsed.extractableChars,
-      scannedPagesCount: doverEntry.parsed.scannedPages.length,
-      parseMs: doverEntry.parsed.parseMs,
-      parsePagesPerSec: Math.round(
-        (doverEntry.parsed.book.pageCount / Math.max(1, doverEntry.parsed.parseMs)) * 1000
-      ),
-      strippedLines: doverEntry.parsed.book.strippedLineCount ?? 0,
-      detectedSectionsCount: doverBodySections.length,
-      outlineCsiBookmarksCount: doverEntry.parsed.outlineCsiCodes.length,
-      shiftTest: doverShift,
-    },
+    suite1_fullScaleDover1046p: doverSummary,
     suite2_unseenTenManuals: {
-      manualsCount: unseenEntries.length,
+      manualsCount: 10,
       totalPages: unseenTotalPages,
       totalSectionsDetected: unseenTotalSectionsDetected,
       outlineCheckedManuals,
       outlineExpectedSections: outlineExpectedTotal,
       outlineMatchedSections: outlineMatchedTotal,
       outlineMissedSections: outlineMissedTotal,
-      verbatimShiftSectionsChecked: unseenShiftSectionsChecked,
-      verbatimShiftFalsePositives: unseenShiftFalsePositives,
+      symmetricShiftSectionsChecked: unseenSymShiftSectionsChecked,
+      symmetricShiftFalsePositives: unseenSymShiftFalsePositives,
+      asymmetricBookmarkManualsTested: asymBookmarkedManualsCount,
+      asymmetricBookmarkSectionsChecked: asymSectionsChecked,
+      asymmetricBookmarkFalsePositives: asymFalsePositives,
+      asymmetricBookmarkWarningsTriggered: asymWarningsTriggered,
       verbatimShiftPageBaselineChangedPages: unseenShiftBaselineChangedPages,
       verbatimShiftPageBaselineTotalPages: unseenShiftBaselineTotalPages,
       perDocument: unseenPerDocument,
@@ -963,6 +1062,7 @@ async function main() {
     JSON.stringify(
       {
         overview: report.corpusOverview,
+        peakRssMb: report.peakRssMb,
         confidenceIntervals: Object.fromEntries(
           Object.entries(report.confidenceIntervals).map(([k, v]) => [k, v.summary])
         ),

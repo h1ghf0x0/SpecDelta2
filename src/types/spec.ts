@@ -106,6 +106,9 @@ export interface ParseDiagnostics {
   oldMostlyScanned?: boolean;
   newMostlyScanned?: boolean;
   outlineHintsUsed?: number;
+  oldOutlineBookmarkCount?: number;
+  newOutlineBookmarkCount?: number;
+  bookmarkAsymmetryWarning?: boolean;
   appliedNoiseConfig?: NoiseFilterConfig;
   renumberedCount?: number;
 }
@@ -126,6 +129,7 @@ export interface SingleSpecParseOutput {
   scannedPages?: number[];
   isMostlyScanned?: boolean;
   outlineHintsUsed?: number;
+  outlineBookmarkCount?: number;
   appliedNoiseConfig?: NoiseFilterConfig;
 }
 

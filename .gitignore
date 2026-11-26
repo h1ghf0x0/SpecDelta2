@@ -7,3 +7,4 @@ coverage/
 .env*
 !.env.example
 benchmarks/heldout/*.pdf
+benchmarks/sealed/*.pdf

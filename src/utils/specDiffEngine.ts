@@ -568,6 +568,11 @@ export function compareParsedBooks(
   const diffElapsedMs = Math.round(performance.now() - diffStart);
   const totalParseMs = Math.max(oldBook.parseTimeMs, newBook.parseTimeMs) + diffElapsedMs;
 
+  const oldOutlineBookmarkCount = oldBook.outlineBookmarkCount ?? 0;
+  const newOutlineBookmarkCount = newBook.outlineBookmarkCount ?? 0;
+  const bookmarkAsymmetryWarning =
+    (oldOutlineBookmarkCount > 0) !== (newOutlineBookmarkCount > 0);
+
   return {
     results,
     diagnostics: {
@@ -590,6 +595,9 @@ export function compareParsedBooks(
       oldMostlyScanned: false,
       newMostlyScanned: false,
       outlineHintsUsed: (oldBook.outlineHintsUsed ?? 0) + (newBook.outlineHintsUsed ?? 0),
+      oldOutlineBookmarkCount,
+      newOutlineBookmarkCount,
+      bookmarkAsymmetryWarning,
       appliedNoiseConfig: newBook.appliedNoiseConfig ?? oldBook.appliedNoiseConfig,
       renumberedCount,
     },

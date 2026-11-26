@@ -1649,6 +1649,21 @@ export function DiffWorkbench({
               </div>
             )}
 
+            {diffOutput.diagnostics.bookmarkAsymmetryWarning && (
+              <div className="bg-amber-50/80 border border-amber-200 rounded-lg p-3.5 flex items-start gap-3 text-sm text-amber-950">
+                <AlertTriangle className="w-4 h-4 text-[#B45309] shrink-0 mt-0.5" />
+                <div className="space-y-1 flex-1 text-xs leading-relaxed">
+                  <div className="font-semibold">
+                    Asymmetric PDF bookmarks detected ({diffOutput.diagnostics.oldOutlineBookmarkCount ?? 0} in Baseline vs. {diffOutput.diagnostics.newOutlineBookmarkCount ?? 0} in Addendum)
+                  </div>
+                  <div className="text-amber-900">
+                    Only one PDF includes embedded CSI outline bookmarks. Sections without standard{' '}
+                    <span className="font-mono">SECTION XX XX XX</span> headings may split in the bookmarked file and stay grouped under Front Matter (<span className="font-mono">00 01 00</span>) in the un-bookmarked file—verify any unexpected Added/Deleted sections against the PDF.
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Risk-First Connected Tabular KPI Ledger Strip */}
             <div className="bg-white border border-slate-200 rounded-lg grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 overflow-hidden">
               <div className="p-4">

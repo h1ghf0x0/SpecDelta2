@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-26T10:16:35.932Z",
+  "generatedAt": "2026-11-26T10:35:45.757Z",
   "nodeVersion": "v22.23.5",
-  "totalDurationMs": 201407,
-  "peakRssMb": 1580.4,
+  "totalDurationMs": 206518,
+  "peakRssMb": 1052.5,
   "corpusOverview": {
     "fullScaleDoverPages": 1046,
     "unseenManualsCount": 10,
@@ -10,8 +10,8 @@
     "unseenTotalExtractableChars": 11842169,
     "unseenTotalScannedPages": 28,
     "unseenTotalStrippedNoiseLines": 9660,
-    "unseenTotalSectionsDetected": 637,
-    "unseenAvgParsePagesPerSec": 79
+    "unseenTotalSectionsDetected": 644,
+    "unseenAvgParsePagesPerSec": 76
   },
   "confidenceIntervals": {
     "doverFullScaleShiftFalsePositives": {
@@ -25,82 +25,93 @@
       "oneSided95UpperPct": 2.7,
       "summary": "0/111 (95% one-sided upper bound ≤ 2.7%; two-sided 95% CI 0.0–3.3%)"
     },
-    "unseenManualsShiftFalsePositives": {
-      "events": 6,
-      "trials": 637,
-      "pointPct": 0.9,
+    "unseenManualsSymmetricShiftFalsePositives": {
+      "events": 0,
+      "trials": 644,
+      "pointPct": 0,
       "ci95TwoSidedPct": [
-        0.3,
-        2
+        0,
+        0.6
       ],
-      "oneSided95UpperPct": 1.9,
-      "summary": "6/637 (0.9%; two-sided 95% CI 0.3–2%)"
+      "oneSided95UpperPct": 0.5,
+      "summary": "0/644 (95% one-sided upper bound ≤ 0.5%; two-sided 95% CI 0.0–0.6%)"
+    },
+    "unseenAsymmetricBookmarkShiftFalsePositives": {
+      "events": 6,
+      "trials": 318,
+      "pointPct": 1.9,
+      "ci95TwoSidedPct": [
+        0.7,
+        4.1
+      ],
+      "oneSided95UpperPct": 3.7,
+      "summary": "6/318 (1.9%; two-sided 95% CI 0.7–4.1%)"
     },
     "unseenOutlineCsiSectionRecall": {
-      "events": 230,
+      "events": 233,
       "trials": 234,
-      "pointPct": 98.3,
+      "pointPct": 99.6,
       "ci95TwoSidedPct": [
-        95.7,
-        99.5
+        97.6,
+        100
       ],
-      "oneSided95UpperPct": 99.4,
-      "summary": "230/234 (98.3%; two-sided 95% CI 95.7–99.5%)"
+      "oneSided95UpperPct": 100,
+      "summary": "233/234 (99.6%; two-sided 95% CI 97.6–100%)"
     },
     "unseenOutlineCsiSectionMisses": {
-      "events": 4,
+      "events": 1,
       "trials": 234,
-      "pointPct": 1.7,
+      "pointPct": 0.4,
       "ci95TwoSidedPct": [
-        0.5,
-        4.3
+        0,
+        2.4
       ],
-      "oneSided95UpperPct": 3.9,
-      "summary": "4/234 (1.7%; two-sided 95% CI 0.5–4.3%)"
+      "oneSided95UpperPct": 2,
+      "summary": "1/234 (0.4%; two-sided 95% CI 0–2.4%)"
     },
     "heldoutPlantedEditsCaught": {
-      "events": 22,
-      "trials": 23,
-      "pointPct": 95.7,
+      "events": 109,
+      "trials": 110,
+      "pointPct": 99.1,
       "ci95TwoSidedPct": [
-        78.1,
-        99.9
+        95,
+        100
       ],
-      "oneSided95UpperPct": 99.8,
-      "summary": "22/23 (95.7%; two-sided 95% CI 78.1–99.9%)"
+      "oneSided95UpperPct": 100,
+      "summary": "109/110 (99.1%; two-sided 95% CI 95–100%)"
     },
     "heldoutPlantedEditsMissed": {
       "events": 1,
-      "trials": 23,
-      "pointPct": 4.3,
+      "trials": 110,
+      "pointPct": 0.9,
       "ci95TwoSidedPct": [
-        0.1,
-        21.9
+        0,
+        5
       ],
-      "oneSided95UpperPct": 19,
-      "summary": "1/23 (4.3%; two-sided 95% CI 0.1–21.9%)"
+      "oneSided95UpperPct": 4.2,
+      "summary": "1/110 (0.9%; two-sided 95% CI 0–5%)"
     },
     "heldoutPlantedRiskFlagsMatched": {
-      "events": 20,
-      "trials": 21,
-      "pointPct": 95.2,
+      "events": 101,
+      "trials": 102,
+      "pointPct": 99,
       "ci95TwoSidedPct": [
-        76.2,
-        99.9
+        94.7,
+        100
       ],
-      "oneSided95UpperPct": 99.8,
-      "summary": "20/21 (95.2%; two-sided 95% CI 76.2–99.9%)"
+      "oneSided95UpperPct": 99.9,
+      "summary": "101/102 (99%; two-sided 95% CI 94.7–100%)"
     },
     "heldoutPlantedUnchangedFalsePositives": {
       "events": 1,
-      "trials": 19,
-      "pointPct": 5.3,
+      "trials": 45,
+      "pointPct": 2.2,
       "ci95TwoSidedPct": [
         0.1,
-        26
+        11.8
       ],
-      "oneSided95UpperPct": 22.6,
-      "summary": "1/19 (5.3%; two-sided 95% CI 0.1–26%)"
+      "oneSided95UpperPct": 10.1,
+      "summary": "1/45 (2.2%; two-sided 95% CI 0.1–11.8%)"
     }
   },
   "suite1_fullScaleDover1046p": {
@@ -109,13 +120,13 @@
     "pages": 1046,
     "extractableChars": 2488491,
     "scannedPagesCount": 0,
-    "parseMs": 13311,
+    "parseMs": 13217,
     "parsePagesPerSec": 79,
     "strippedLines": 2845,
     "detectedSectionsCount": 111,
     "outlineCsiBookmarksCount": 3,
+    "rssAfterDocMb": 776,
     "shiftTest": {
-      "tested": true,
       "origPages": 1046,
       "shiftedPages": 1047,
       "sectionsChecked": 111,
@@ -123,18 +134,29 @@
       "falsePositiveCodes": [],
       "pageBaselineChangedPages": 1047,
       "pageBaselineTotalPages": 1047
+    },
+    "asymmetricBookmarkTest": {
+      "tested": true,
+      "sectionsChecked": 111,
+      "sectionFalsePositives": 0,
+      "falsePositiveCodes": [],
+      "warningTriggered": true
     }
   },
   "suite2_unseenTenManuals": {
     "manualsCount": 10,
     "totalPages": 5269,
-    "totalSectionsDetected": 637,
+    "totalSectionsDetected": 644,
     "outlineCheckedManuals": 6,
     "outlineExpectedSections": 234,
-    "outlineMatchedSections": 230,
-    "outlineMissedSections": 4,
-    "verbatimShiftSectionsChecked": 637,
-    "verbatimShiftFalsePositives": 6,
+    "outlineMatchedSections": 233,
+    "outlineMissedSections": 1,
+    "symmetricShiftSectionsChecked": 644,
+    "symmetricShiftFalsePositives": 0,
+    "asymmetricBookmarkManualsTested": 6,
+    "asymmetricBookmarkSectionsChecked": 318,
+    "asymmetricBookmarkFalsePositives": 6,
+    "asymmetricBookmarkWarningsTriggered": 6,
     "verbatimShiftPageBaselineChangedPages": 5249,
     "verbatimShiftPageBaselineTotalPages": 5279,
     "perDocument": [
@@ -146,14 +168,14 @@
         "pages": 255,
         "extractableChars": 587643,
         "scannedPagesCount": 0,
-        "parseMs": 2742,
+        "parseMs": 2735,
         "pagesPerSec": 93,
         "strippedLines": 35,
         "detectedSectionsCount": 47,
         "outlineCsiBookmarksCount": 32,
         "outlineCsiBookmarksMissed": [],
+        "rssAfterDocMb": 763.7,
         "shiftTest": {
-          "tested": true,
           "origPages": 255,
           "shiftedPages": 256,
           "sectionsChecked": 47,
@@ -161,6 +183,13 @@
           "falsePositiveCodes": [],
           "pageBaselineChangedPages": 256,
           "pageBaselineTotalPages": 256
+        },
+        "asymmetricBookmarkTest": {
+          "tested": true,
+          "sectionsChecked": 47,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "warningTriggered": true
         }
       },
       {
@@ -171,14 +200,14 @@
         "pages": 315,
         "extractableChars": 540177,
         "scannedPagesCount": 0,
-        "parseMs": 2902,
-        "pagesPerSec": 109,
+        "parseMs": 2837,
+        "pagesPerSec": 111,
         "strippedLines": 610,
         "detectedSectionsCount": 51,
         "outlineCsiBookmarksCount": 0,
         "outlineCsiBookmarksMissed": [],
+        "rssAfterDocMb": 763.1,
         "shiftTest": {
-          "tested": true,
           "origPages": 315,
           "shiftedPages": 316,
           "sectionsChecked": 51,
@@ -186,6 +215,13 @@
           "falsePositiveCodes": [],
           "pageBaselineChangedPages": 316,
           "pageBaselineTotalPages": 316
+        },
+        "asymmetricBookmarkTest": {
+          "tested": false,
+          "sectionsChecked": 0,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "warningTriggered": false
         }
       },
       {
@@ -196,23 +232,28 @@
         "pages": 457,
         "extractableChars": 845738,
         "scannedPagesCount": 0,
-        "parseMs": 4644,
-        "pagesPerSec": 98,
+        "parseMs": 4571,
+        "pagesPerSec": 100,
         "strippedLines": 368,
-        "detectedSectionsCount": 78,
+        "detectedSectionsCount": 79,
         "outlineCsiBookmarksCount": 65,
-        "outlineCsiBookmarksMissed": [
-          "01 29 00"
-        ],
+        "outlineCsiBookmarksMissed": [],
+        "rssAfterDocMb": 784.3,
         "shiftTest": {
-          "tested": true,
           "origPages": 457,
           "shiftedPages": 458,
-          "sectionsChecked": 78,
+          "sectionsChecked": 79,
           "sectionFalsePositives": 0,
           "falsePositiveCodes": [],
           "pageBaselineChangedPages": 458,
           "pageBaselineTotalPages": 458
+        },
+        "asymmetricBookmarkTest": {
+          "tested": true,
+          "sectionsChecked": 79,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "warningTriggered": true
         }
       },
       {
@@ -223,14 +264,14 @@
         "pages": 127,
         "extractableChars": 250000,
         "scannedPagesCount": 0,
-        "parseMs": 1036,
-        "pagesPerSec": 123,
+        "parseMs": 1195,
+        "pagesPerSec": 106,
         "strippedLines": 52,
         "detectedSectionsCount": 30,
         "outlineCsiBookmarksCount": 11,
         "outlineCsiBookmarksMissed": [],
+        "rssAfterDocMb": 784.6,
         "shiftTest": {
-          "tested": true,
           "origPages": 127,
           "shiftedPages": 128,
           "sectionsChecked": 30,
@@ -238,6 +279,13 @@
           "falsePositiveCodes": [],
           "pageBaselineChangedPages": 128,
           "pageBaselineTotalPages": 128
+        },
+        "asymmetricBookmarkTest": {
+          "tested": true,
+          "sectionsChecked": 30,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "warningTriggered": true
         }
       },
       {
@@ -248,21 +296,28 @@
         "pages": 345,
         "extractableChars": 704996,
         "scannedPagesCount": 0,
-        "parseMs": 2586,
-        "pagesPerSec": 133,
+        "parseMs": 2909,
+        "pagesPerSec": 119,
         "strippedLines": 381,
-        "detectedSectionsCount": 31,
+        "detectedSectionsCount": 32,
         "outlineCsiBookmarksCount": 0,
         "outlineCsiBookmarksMissed": [],
+        "rssAfterDocMb": 789.4,
         "shiftTest": {
-          "tested": true,
           "origPages": 345,
           "shiftedPages": 346,
-          "sectionsChecked": 31,
+          "sectionsChecked": 32,
           "sectionFalsePositives": 0,
           "falsePositiveCodes": [],
           "pageBaselineChangedPages": 346,
           "pageBaselineTotalPages": 346
+        },
+        "asymmetricBookmarkTest": {
+          "tested": false,
+          "sectionsChecked": 0,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "warningTriggered": false
         }
       },
       {
@@ -273,23 +328,28 @@
         "pages": 143,
         "extractableChars": 327440,
         "scannedPagesCount": 0,
-        "parseMs": 1213,
-        "pagesPerSec": 118,
+        "parseMs": 1237,
+        "pagesPerSec": 116,
         "strippedLines": 855,
-        "detectedSectionsCount": 33,
+        "detectedSectionsCount": 34,
         "outlineCsiBookmarksCount": 34,
-        "outlineCsiBookmarksMissed": [
-          "01 78 30"
-        ],
+        "outlineCsiBookmarksMissed": [],
+        "rssAfterDocMb": 790.6,
         "shiftTest": {
-          "tested": true,
           "origPages": 143,
           "shiftedPages": 144,
-          "sectionsChecked": 33,
+          "sectionsChecked": 34,
           "sectionFalsePositives": 0,
           "falsePositiveCodes": [],
           "pageBaselineChangedPages": 144,
           "pageBaselineTotalPages": 144
+        },
+        "asymmetricBookmarkTest": {
+          "tested": true,
+          "sectionsChecked": 34,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "warningTriggered": true
         }
       },
       {
@@ -300,21 +360,28 @@
         "pages": 674,
         "extractableChars": 1289484,
         "scannedPagesCount": 27,
-        "parseMs": 11729,
-        "pagesPerSec": 57,
+        "parseMs": 11594,
+        "pagesPerSec": 58,
         "strippedLines": 357,
-        "detectedSectionsCount": 111,
+        "detectedSectionsCount": 112,
         "outlineCsiBookmarksCount": 0,
         "outlineCsiBookmarksMissed": [],
+        "rssAfterDocMb": 810.9,
         "shiftTest": {
-          "tested": true,
           "origPages": 674,
           "shiftedPages": 675,
-          "sectionsChecked": 111,
+          "sectionsChecked": 112,
           "sectionFalsePositives": 0,
           "falsePositiveCodes": [],
           "pageBaselineChangedPages": 646,
           "pageBaselineTotalPages": 675
+        },
+        "asymmetricBookmarkTest": {
+          "tested": false,
+          "sectionsChecked": 0,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "warningTriggered": false
         }
       },
       {
@@ -325,21 +392,28 @@
         "pages": 1984,
         "extractableChars": 4775895,
         "scannedPagesCount": 0,
-        "parseMs": 25570,
-        "pagesPerSec": 78,
+        "parseMs": 28033,
+        "pagesPerSec": 71,
         "strippedLines": 5137,
-        "detectedSectionsCount": 129,
+        "detectedSectionsCount": 131,
         "outlineCsiBookmarksCount": 0,
         "outlineCsiBookmarksMissed": [],
+        "rssAfterDocMb": 954.5,
         "shiftTest": {
-          "tested": true,
           "origPages": 1984,
           "shiftedPages": 1985,
-          "sectionsChecked": 129,
+          "sectionsChecked": 131,
           "sectionFalsePositives": 0,
           "falsePositiveCodes": [],
           "pageBaselineChangedPages": 1985,
           "pageBaselineTotalPages": 1985
+        },
+        "asymmetricBookmarkTest": {
+          "tested": false,
+          "sectionsChecked": 0,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "warningTriggered": false
         }
       },
       {
@@ -350,16 +424,24 @@
         "pages": 688,
         "extractableChars": 1940487,
         "scannedPagesCount": 1,
-        "parseMs": 9981,
-        "pagesPerSec": 69,
+        "parseMs": 10365,
+        "pagesPerSec": 66,
         "strippedLines": 1865,
         "detectedSectionsCount": 72,
         "outlineCsiBookmarksCount": 37,
         "outlineCsiBookmarksMissed": [],
+        "rssAfterDocMb": 1069.9,
         "shiftTest": {
-          "tested": true,
           "origPages": 688,
           "shiftedPages": 689,
+          "sectionsChecked": 72,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "pageBaselineChangedPages": 688,
+          "pageBaselineTotalPages": 689
+        },
+        "asymmetricBookmarkTest": {
+          "tested": true,
           "sectionsChecked": 72,
           "sectionFalsePositives": 6,
           "falsePositiveCodes": [
@@ -370,8 +452,7 @@
             "01 40 00:deleted",
             "28 31 00:modified"
           ],
-          "pageBaselineChangedPages": 688,
-          "pageBaselineTotalPages": 689
+          "warningTriggered": true
         }
       },
       {
@@ -382,47 +463,53 @@
         "pages": 281,
         "extractableChars": 580309,
         "scannedPagesCount": 0,
-        "parseMs": 4176,
-        "pagesPerSec": 67,
+        "parseMs": 3875,
+        "pagesPerSec": 73,
         "strippedLines": 0,
-        "detectedSectionsCount": 55,
+        "detectedSectionsCount": 56,
         "outlineCsiBookmarksCount": 55,
         "outlineCsiBookmarksMissed": [
-          "01 35 00",
-          "01 77 00"
+          "01 35 00"
         ],
+        "rssAfterDocMb": 1052.8,
         "shiftTest": {
-          "tested": true,
           "origPages": 281,
           "shiftedPages": 282,
-          "sectionsChecked": 55,
+          "sectionsChecked": 56,
           "sectionFalsePositives": 0,
           "falsePositiveCodes": [],
           "pageBaselineChangedPages": 282,
           "pageBaselineTotalPages": 282
+        },
+        "asymmetricBookmarkTest": {
+          "tested": true,
+          "sectionsChecked": 56,
+          "sectionFalsePositives": 0,
+          "falsePositiveCodes": [],
+          "warningTriggered": true
         }
       }
     ]
   },
   "suite3_heldoutPlantedEdits": {
-    "sourceSectionsSampled": 40,
-    "basePages": 88,
-    "addendumPages": 91,
-    "diffMs": 49,
-    "totalSectionsCompared": 41,
-    "unchangedSectionsAudited": 19,
+    "sourceSectionsSampled": 150,
+    "basePages": 220,
+    "addendumPages": 220,
+    "diffMs": 111,
+    "totalSectionsCompared": 155,
+    "unchangedSectionsAudited": 45,
     "falsePositiveSectionCount": 1,
     "falsePositiveSections": [
       {
-        "sectionCode": "00 01 00",
+        "sectionCode": "23 31 13",
         "status": "modified"
       }
     ],
-    "plantedEditsTotal": 23,
-    "plantedEditsCaught": 22,
+    "plantedEditsTotal": 110,
+    "plantedEditsCaught": 109,
     "plantedEditsMissed": 1,
-    "riskFlagsExpected": 21,
-    "riskFlagsMatched": 20,
+    "riskFlagsExpected": 102,
+    "riskFlagsMatched": 101,
     "outcomes": [
       {
         "id": "H_01_ca_dgs_pm.pdf_002100_psi_tolerance_upgrade",
@@ -443,8 +530,8 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_02_kenedy_tx_pm.pdf_010100_warranty_and_threshold",
-        "sectionCode": "01 01 00",
+        "id": "H_01_ca_dgs_pm.pdf_007200_warranty_and_threshold",
+        "sectionCode": "00 72 00",
         "expectedType": "modified",
         "detectedStatus": "modified",
         "renumberedFrom": null,
@@ -452,8 +539,8 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_02_kenedy_tx_pm.pdf_010270_gauge_and_directive",
-        "sectionCode": "01 02 70",
+        "id": "H_01_ca_dgs_pm.pdf_007300_gauge_and_directive",
+        "sectionCode": "00 73 00",
         "expectedType": "modified",
         "detectedStatus": "modified",
         "renumberedFrom": null,
@@ -461,25 +548,7 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_03_santafe_nm_pm.pdf_011000_fire_rating_upgrade",
-        "sectionCode": "01 10 00",
-        "expectedType": "modified",
-        "detectedStatus": "modified",
-        "renumberedFrom": null,
-        "detected": true,
-        "riskFlagMatched": true
-      },
-      {
-        "id": "H_03_santafe_nm_pm.pdf_012100_psi_tolerance_upgrade",
-        "sectionCode": "01 21 00",
-        "expectedType": "modified",
-        "detectedStatus": "modified",
-        "renumberedFrom": null,
-        "detected": true,
-        "riskFlagMatched": true
-      },
-      {
-        "id": "H_04_merced_college.pdf_011100_allowance_and_owner_scope",
+        "id": "H_01_ca_dgs_pm.pdf_011100_fire_rating_upgrade",
         "sectionCode": "01 11 00",
         "expectedType": "modified",
         "detectedStatus": "modified",
@@ -488,8 +557,8 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_04_merced_college.pdf_013226_warranty_and_threshold",
-        "sectionCode": "01 32 26",
+        "id": "H_01_ca_dgs_pm.pdf_012100_liquidated_damages_and_percentage",
+        "sectionCode": "01 21 00",
         "expectedType": "modified",
         "detectedStatus": "modified",
         "renumberedFrom": null,
@@ -497,16 +566,7 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_05_redrocks_cc.pdf_002600_gauge_and_directive",
-        "sectionCode": "00 26 00",
-        "expectedType": "modified",
-        "detectedStatus": "modified",
-        "renumberedFrom": null,
-        "detected": true,
-        "riskFlagMatched": true
-      },
-      {
-        "id": "H_05_redrocks_cc.pdf_013100_fire_rating_upgrade",
+        "id": "H_01_ca_dgs_pm.pdf_013100_psi_tolerance_upgrade",
         "sectionCode": "01 31 00",
         "expectedType": "modified",
         "detectedStatus": "modified",
@@ -515,7 +575,394 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_06_humboldt_pm.pdf_011400_psi_tolerance_upgrade",
+        "id": "H_01_ca_dgs_pm.pdf_013125_allowance_and_owner_scope",
+        "sectionCode": "01 31 25",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_01_ca_dgs_pm.pdf_013216_warranty_and_threshold",
+        "sectionCode": "01 32 16",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_01_ca_dgs_pm.pdf_013233_gauge_and_directive",
+        "sectionCode": "01 32 33",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_02_kenedy_tx_pm.pdf_010100_fire_rating_upgrade",
+        "sectionCode": "01 01 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_02_kenedy_tx_pm.pdf_010270_liquidated_damages_and_percentage",
+        "sectionCode": "01 02 70",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_02_kenedy_tx_pm.pdf_010300_psi_tolerance_upgrade",
+        "sectionCode": "01 03 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_02_kenedy_tx_pm.pdf_010350_allowance_and_owner_scope",
+        "sectionCode": "01 03 50",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_02_kenedy_tx_pm.pdf_010400_warranty_and_threshold",
+        "sectionCode": "01 04 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_02_kenedy_tx_pm.pdf_010450_gauge_and_directive",
+        "sectionCode": "01 04 50",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_02_kenedy_tx_pm.pdf_012000_fire_rating_upgrade",
+        "sectionCode": "01 20 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_02_kenedy_tx_pm.pdf_013000_liquidated_damages_and_percentage",
+        "sectionCode": "01 30 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_02_kenedy_tx_pm.pdf_014000_psi_tolerance_upgrade",
+        "sectionCode": "01 40 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_02_kenedy_tx_pm.pdf_014500_allowance_and_owner_scope",
+        "sectionCode": "01 45 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_03_santafe_nm_pm.pdf_011000_warranty_and_threshold",
+        "sectionCode": "01 10 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_03_santafe_nm_pm.pdf_012500_gauge_and_directive",
+        "sectionCode": "01 25 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_03_santafe_nm_pm.pdf_012600_fire_rating_upgrade",
+        "sectionCode": "01 26 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_03_santafe_nm_pm.pdf_012900_liquidated_damages_and_percentage",
+        "sectionCode": "01 29 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_03_santafe_nm_pm.pdf_013200_psi_tolerance_upgrade",
+        "sectionCode": "01 32 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_03_santafe_nm_pm.pdf_014200_allowance_and_owner_scope",
+        "sectionCode": "01 42 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_03_santafe_nm_pm.pdf_014300_warranty_and_threshold",
+        "sectionCode": "01 43 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_03_santafe_nm_pm.pdf_017500_gauge_and_directive",
+        "sectionCode": "01 75 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_03_santafe_nm_pm.pdf_017700_fire_rating_upgrade",
+        "sectionCode": "01 77 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_03_santafe_nm_pm.pdf_017800_liquidated_damages_and_percentage",
+        "sectionCode": "01 78 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_04_merced_college.pdf_013226_psi_tolerance_upgrade",
+        "sectionCode": "01 32 26",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_04_merced_college.pdf_017123_allowance_and_owner_scope",
+        "sectionCode": "01 71 23",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_04_merced_college.pdf_017329_warranty_and_threshold",
+        "sectionCode": "01 73 29",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_04_merced_college.pdf_260500_gauge_and_directive",
+        "sectionCode": "26 05 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_04_merced_college.pdf_260519_fire_rating_upgrade",
+        "sectionCode": "26 05 19",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_04_merced_college.pdf_260526_liquidated_damages_and_percentage",
+        "sectionCode": "26 05 26",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_04_merced_college.pdf_260533_psi_tolerance_upgrade",
+        "sectionCode": "26 05 33",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_04_merced_college.pdf_260553_allowance_and_owner_scope",
+        "sectionCode": "26 05 53",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_04_merced_college.pdf_262200_warranty_and_threshold",
+        "sectionCode": "26 22 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_04_merced_college.pdf_262416_gauge_and_directive",
+        "sectionCode": "26 24 16",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_05_redrocks_cc.pdf_002600_fire_rating_upgrade",
+        "sectionCode": "00 26 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_05_redrocks_cc.pdf_017839_liquidated_damages_and_percentage",
+        "sectionCode": "01 78 39",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_05_redrocks_cc.pdf_133000_psi_tolerance_upgrade",
+        "sectionCode": "13 30 00",
+        "expectedType": "modified",
+        "detectedStatus": "unchanged",
+        "renumberedFrom": null,
+        "detected": false,
+        "riskFlagMatched": false
+      },
+      {
+        "id": "H_05_redrocks_cc.pdf_220500_allowance_and_owner_scope",
+        "sectionCode": "22 05 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_05_redrocks_cc.pdf_220523_warranty_and_threshold",
+        "sectionCode": "22 05 23",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_05_redrocks_cc.pdf_220529_gauge_and_directive",
+        "sectionCode": "22 05 29",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_05_redrocks_cc.pdf_220553_fire_rating_upgrade",
+        "sectionCode": "22 05 53",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_05_redrocks_cc.pdf_226313_liquidated_damages_and_percentage",
+        "sectionCode": "22 63 13",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_05_redrocks_cc.pdf_230500_psi_tolerance_upgrade",
+        "sectionCode": "23 05 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_05_redrocks_cc.pdf_230513_allowance_and_owner_scope",
+        "sectionCode": "23 05 13",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_06_humboldt_pm.pdf_011400_warranty_and_threshold",
         "sectionCode": "01 14 00",
         "expectedType": "modified",
         "detectedStatus": "modified",
@@ -524,7 +971,7 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_06_humboldt_pm.pdf_012613_allowance_and_owner_scope",
+        "id": "H_06_humboldt_pm.pdf_012613_gauge_and_directive",
         "sectionCode": "01 26 13",
         "expectedType": "modified",
         "detectedStatus": "modified",
@@ -533,7 +980,79 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_07_unlv_msl.pdf_012913_warranty_and_threshold",
+        "id": "H_06_humboldt_pm.pdf_013120_fire_rating_upgrade",
+        "sectionCode": "01 31 20",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_06_humboldt_pm.pdf_013500_liquidated_damages_and_percentage",
+        "sectionCode": "01 35 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_06_humboldt_pm.pdf_013510_psi_tolerance_upgrade",
+        "sectionCode": "01 35 10",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_06_humboldt_pm.pdf_013550_allowance_and_owner_scope",
+        "sectionCode": "01 35 50",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_06_humboldt_pm.pdf_014580_warranty_and_threshold",
+        "sectionCode": "01 45 80",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_06_humboldt_pm.pdf_015100_gauge_and_directive",
+        "sectionCode": "01 51 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_06_humboldt_pm.pdf_015200_fire_rating_upgrade",
+        "sectionCode": "01 52 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_06_humboldt_pm.pdf_015400_liquidated_damages_and_percentage",
+        "sectionCode": "01 54 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_07_unlv_msl.pdf_012913_psi_tolerance_upgrade",
         "sectionCode": "01 29 13",
         "expectedType": "modified",
         "detectedStatus": "modified",
@@ -542,8 +1061,80 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_07_unlv_msl.pdf_012973_gauge_and_directive",
+        "id": "H_07_unlv_msl.pdf_012973_allowance_and_owner_scope",
         "sectionCode": "01 29 73",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_07_unlv_msl.pdf_013113_warranty_and_threshold",
+        "sectionCode": "01 31 13",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_07_unlv_msl.pdf_013119_gauge_and_directive",
+        "sectionCode": "01 31 19",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_07_unlv_msl.pdf_013132_fire_rating_upgrade",
+        "sectionCode": "01 31 32",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_07_unlv_msl.pdf_013323_liquidated_damages_and_percentage",
+        "sectionCode": "01 33 23",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_07_unlv_msl.pdf_013526_psi_tolerance_upgrade",
+        "sectionCode": "01 35 26",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_07_unlv_msl.pdf_014219_allowance_and_owner_scope",
+        "sectionCode": "01 42 19",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_07_unlv_msl.pdf_014326_warranty_and_threshold",
+        "sectionCode": "01 43 26",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_07_unlv_msl.pdf_016600_gauge_and_directive",
+        "sectionCode": "01 66 00",
         "expectedType": "modified",
         "detectedStatus": "modified",
         "renumberedFrom": null,
@@ -560,6 +1151,15 @@
         "riskFlagMatched": true
       },
       {
+        "id": "H_08_untsystem_pm.pdf_011300_liquidated_damages_and_percentage",
+        "sectionCode": "01 13 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
         "id": "H_08_untsystem_pm.pdf_012200_psi_tolerance_upgrade",
         "sectionCode": "01 22 00",
         "expectedType": "modified",
@@ -569,16 +1169,79 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_09_cmich_pm.pdf_000107_allowance_and_owner_scope",
-        "sectionCode": "00 01 07",
+        "id": "H_08_untsystem_pm.pdf_012300_allowance_and_owner_scope",
+        "sectionCode": "01 23 00",
         "expectedType": "modified",
-        "detectedStatus": "missing",
+        "detectedStatus": "modified",
         "renumberedFrom": null,
-        "detected": false,
-        "riskFlagMatched": false
+        "detected": true,
+        "riskFlagMatched": true
       },
       {
-        "id": "H_09_cmich_pm.pdf_001000_warranty_and_threshold",
+        "id": "H_08_untsystem_pm.pdf_012500.13_warranty_and_threshold",
+        "sectionCode": "01 25 00.13",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_08_untsystem_pm.pdf_015300_gauge_and_directive",
+        "sectionCode": "01 53 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_08_untsystem_pm.pdf_015720_fire_rating_upgrade",
+        "sectionCode": "01 57 20",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_08_untsystem_pm.pdf_017300_liquidated_damages_and_percentage",
+        "sectionCode": "01 73 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_08_untsystem_pm.pdf_017823_psi_tolerance_upgrade",
+        "sectionCode": "01 78 23",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_08_untsystem_pm.pdf_018114_allowance_and_owner_scope",
+        "sectionCode": "01 81 14",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_09_cmich_pm.pdf_000107_warranty_and_threshold",
+        "sectionCode": "00 01 07",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_09_cmich_pm.pdf_001000_gauge_and_directive",
         "sectionCode": "00 10 00",
         "expectedType": "modified",
         "detectedStatus": "modified",
@@ -587,7 +1250,79 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_10_osu_docs.pdf_012476_gauge_and_directive",
+        "id": "H_09_cmich_pm.pdf_004100_fire_rating_upgrade",
+        "sectionCode": "00 41 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_09_cmich_pm.pdf_004100.10_liquidated_damages_and_percentage",
+        "sectionCode": "00 41 00.10",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_09_cmich_pm.pdf_005000_psi_tolerance_upgrade",
+        "sectionCode": "00 50 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_09_cmich_pm.pdf_007000_allowance_and_owner_scope",
+        "sectionCode": "00 70 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_09_cmich_pm.pdf_009000_warranty_and_threshold",
+        "sectionCode": "00 90 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_09_cmich_pm.pdf_014216_gauge_and_directive",
+        "sectionCode": "01 42 16",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_09_cmich_pm.pdf_054000_fire_rating_upgrade",
+        "sectionCode": "05 40 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_09_cmich_pm.pdf_061000_liquidated_damages_and_percentage",
+        "sectionCode": "06 10 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_10_osu_docs.pdf_012476_psi_tolerance_upgrade",
         "sectionCode": "01 24 76",
         "expectedType": "modified",
         "detectedStatus": "modified",
@@ -596,8 +1331,8 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_10_osu_docs.pdf_013000_fire_rating_upgrade",
-        "sectionCode": "01 30 00",
+        "id": "H_10_osu_docs.pdf_014213_allowance_and_owner_scope",
+        "sectionCode": "01 42 13",
         "expectedType": "modified",
         "detectedStatus": "modified",
         "renumberedFrom": null,
@@ -605,8 +1340,80 @@
         "riskFlagMatched": true
       },
       {
-        "id": "H_01_ca_dgs_pm.pdf_007200_deleted",
-        "sectionCode": "00 72 00",
+        "id": "H_10_osu_docs.pdf_072100_warranty_and_threshold",
+        "sectionCode": "07 21 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_10_osu_docs.pdf_075600_gauge_and_directive",
+        "sectionCode": "07 56 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_10_osu_docs.pdf_076200_fire_rating_upgrade",
+        "sectionCode": "07 62 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_10_osu_docs.pdf_230514_liquidated_damages_and_percentage",
+        "sectionCode": "23 05 14",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_10_osu_docs.pdf_230517_psi_tolerance_upgrade",
+        "sectionCode": "23 05 17",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_10_osu_docs.pdf_230519_allowance_and_owner_scope",
+        "sectionCode": "23 05 19",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_10_osu_docs.pdf_230523_warranty_and_threshold",
+        "sectionCode": "23 05 23",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_10_osu_docs.pdf_230713_gauge_and_directive",
+        "sectionCode": "23 07 13",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "H_01_ca_dgs_pm.pdf_013300_deleted",
+        "sectionCode": "01 33 00",
         "expectedType": "deleted",
         "detectedStatus": "deleted",
         "renumberedFrom": null,
@@ -614,13 +1421,76 @@
         "riskFlagMatched": null
       },
       {
-        "id": "H_01_ca_dgs_pm.pdf_007300_renumbered",
-        "sectionCode": "00 73 99",
-        "expectedType": "renumbered",
-        "detectedStatus": "unchanged",
-        "renumberedFrom": "00 73 00",
+        "id": "H_01_ca_dgs_pm.pdf_013329.08_deleted",
+        "sectionCode": "01 33 29.08",
+        "expectedType": "deleted",
+        "detectedStatus": "deleted",
+        "renumberedFrom": null,
         "detected": true,
         "riskFlagMatched": null
+      },
+      {
+        "id": "H_01_ca_dgs_pm.pdf_013516_deleted",
+        "sectionCode": "01 35 16",
+        "expectedType": "deleted",
+        "detectedStatus": "deleted",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": null
+      },
+      {
+        "id": "H_01_ca_dgs_pm.pdf_013557_deleted",
+        "sectionCode": "01 35 57",
+        "expectedType": "deleted",
+        "detectedStatus": "deleted",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": null
+      },
+      {
+        "id": "H_01_ca_dgs_pm.pdf_014100_renumbered",
+        "sectionCode": "01 41 98",
+        "expectedType": "renumbered",
+        "detectedStatus": "unchanged",
+        "renumberedFrom": "01 41 00",
+        "detected": true,
+        "riskFlagMatched": null
+      },
+      {
+        "id": "H_02_kenedy_tx_pm.pdf_015000_renumbered",
+        "sectionCode": "01 50 98",
+        "expectedType": "renumbered",
+        "detectedStatus": "unchanged",
+        "renumberedFrom": "01 50 00",
+        "detected": true,
+        "riskFlagMatched": null
+      },
+      {
+        "id": "H_06_humboldt_pm.pdf_015500_renumbered",
+        "sectionCode": "01 55 98",
+        "expectedType": "renumbered",
+        "detectedStatus": "unchanged",
+        "renumberedFrom": "01 55 00",
+        "detected": true,
+        "riskFlagMatched": null
+      },
+      {
+        "id": "H_06_humboldt_pm.pdf_015800_renumbered",
+        "sectionCode": "01 58 98",
+        "expectedType": "renumbered",
+        "detectedStatus": "unchanged",
+        "renumberedFrom": "01 58 00",
+        "detected": true,
+        "riskFlagMatched": null
+      },
+      {
+        "id": "H_added_499998",
+        "sectionCode": "49 99 98",
+        "expectedType": "added",
+        "detectedStatus": "added",
+        "renumberedFrom": null,
+        "detected": true,
+        "riskFlagMatched": true
       },
       {
         "id": "H_added_499999",

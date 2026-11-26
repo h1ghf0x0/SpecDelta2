@@ -49,12 +49,12 @@ export const SEO_ROUTE_META: Record<AppRoute, RouteSeoMeta> = {
       'Audit re-issued Project Manuals end-to-end to catch silent section deletions, tolerance creep, and narrative mismatches with deterministic word-level diffs.',
   },
   '/benchmark': {
-    title: 'Benchmark: Real & Held-Out Project Manual Corpus Results | SpecDelta',
+    title: 'Benchmark: Real, Held-Out & Sealed Project Manual Corpus Results | SpecDelta',
     description:
-      'Measured counts and Clopper-Pearson 95% confidence intervals across 10 real corpus PDFs (227p), 11 held-out public manuals (6,315p), and a 603-page stress run.',
+      'Measured counts and Clopper-Pearson 95% confidence intervals across 6 sealed manuals (1,734p), 11 held-out manuals (6,315p), 10 real corpus PDFs (227p), and a 603p stress run.',
     h1: 'Measured Accuracy, Counts & Confidence Intervals Across Real Project Manuals',
     summary:
-      'Reproducible measurements with Clopper-Pearson 95% intervals across 10 real corpus PDFs (227p: 12/12 edits caught [95% CI 73.5–100%], 0/20 shift false positives), 11 held-out public manuals (6,315p: 230/234 bookmarked CSI sections matched [98.3%], 6/637 unseen shift false positives [0.9%], 22/23 held-out edits caught [95.7%]), and our 603-page stress run.',
+      'Reproducible measurements with Clopper-Pearson 95% intervals across 6 sealed release manuals (1,734p: 41/41 bookmark CSI sections matched [100%], 0/244 symmetric shift false positives, 58/59 edits caught [98.3%]), 11 held-out manuals (6,315p: 233/234 bookmark sections [99.6%], 0/644 unseen symmetric shift FPs, 109/110 edits [99.1%]), 10 baseline PDFs (227p: 12/12 edits [95% CI 73.5–100%]), and 1,984p UNT memory profiling (540.4 MB RSS / 270.3 MB JS heap).',
   },
   '/compare-division-03-concrete-specs': {
     title: 'Compare Division 03 Concrete Specs & Addenda | SpecDelta',
