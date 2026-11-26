@@ -1,0 +1,596 @@
+{
+  "generatedAt": "2026-11-26T10:13:12.330Z",
+  "nodeVersion": "v22.23.5",
+  "totalDurationMs": 9861,
+  "peakRssMb": 493.9,
+  "corpusOverview": {
+    "pdfCount": 10,
+    "specBodyPdfCount": 8,
+    "tocTrapPdfCount": 2,
+    "totalRealPages": 227,
+    "totalExtractableChars": 534924,
+    "totalStrippedNoiseLines": 772,
+    "totalExpectedCsiSections": 21
+  },
+  "summaryRates": {
+    "parserSectionSplitFalsePositiveRatePct": 0,
+    "parserSectionMissRatePct": 0,
+    "verbatimPageShiftDiffFalsePositiveRatePct": 0,
+    "consolidatedManualFalsePositiveRatePct": 0,
+    "plantedRealEditMissRatePct": 0,
+    "plantedRealEditRecallPct": 100,
+    "plantedRiskFlagRecallPct": 100,
+    "verbatimPageBaselineFlaggedPct": 100,
+    "consolidatedPageBaselineFlaggedPct": 100
+  },
+  "confidenceIntervals": {
+    "parserSectionSplitFalsePositives": {
+      "events": 0,
+      "trials": 21,
+      "pointPct": 0,
+      "ci95TwoSidedPct": [
+        0,
+        16.1
+      ],
+      "oneSided95UpperPct": 13.3,
+      "summary": "0/21 (95% one-sided upper bound ≤ 13.3%; two-sided 95% CI 0.0–16.1%)"
+    },
+    "parserSectionMisses": {
+      "events": 0,
+      "trials": 21,
+      "pointPct": 0,
+      "ci95TwoSidedPct": [
+        0,
+        16.1
+      ],
+      "oneSided95UpperPct": 13.3,
+      "summary": "0/21 (95% one-sided upper bound ≤ 13.3%; two-sided 95% CI 0.0–16.1%)"
+    },
+    "verbatimPageShiftFalsePositives": {
+      "events": 0,
+      "trials": 20,
+      "pointPct": 0,
+      "ci95TwoSidedPct": [
+        0,
+        16.8
+      ],
+      "oneSided95UpperPct": 13.9,
+      "summary": "0/20 (95% one-sided upper bound ≤ 13.9%; two-sided 95% CI 0.0–16.8%)"
+    },
+    "consolidatedUnchangedFalsePositives": {
+      "events": 0,
+      "trials": 9,
+      "pointPct": 0,
+      "ci95TwoSidedPct": [
+        0,
+        33.6
+      ],
+      "oneSided95UpperPct": 28.3,
+      "summary": "0/9 (95% one-sided upper bound ≤ 28.3%; two-sided 95% CI 0.0–33.6%)"
+    },
+    "plantedRealEditsCaught": {
+      "events": 12,
+      "trials": 12,
+      "pointPct": 100,
+      "ci95TwoSidedPct": [
+        73.5,
+        100
+      ],
+      "oneSided95UpperPct": 100,
+      "summary": "12/12 (100%; two-sided 95% CI 73.5–100%)"
+    },
+    "plantedRealEditsMissed": {
+      "events": 0,
+      "trials": 12,
+      "pointPct": 0,
+      "ci95TwoSidedPct": [
+        0,
+        26.5
+      ],
+      "oneSided95UpperPct": 22.1,
+      "summary": "0/12 (95% one-sided upper bound ≤ 22.1%; two-sided 95% CI 0.0–26.5%)"
+    },
+    "plantedRiskFlagsMatched": {
+      "events": 9,
+      "trials": 9,
+      "pointPct": 100,
+      "ci95TwoSidedPct": [
+        66.4,
+        100
+      ],
+      "oneSided95UpperPct": 100,
+      "summary": "9/9 (100%; two-sided 95% CI 66.4–100%)"
+    }
+  },
+  "suite1_realPdfParserAudit": {
+    "expectedSections": 21,
+    "detectedSections": 21,
+    "falsePositiveSplits": 0,
+    "missedSections": 0,
+    "falsePositiveRatePct": 0,
+    "missRatePct": 0,
+    "perDocument": [
+      {
+        "file": "01_uh_033000.pdf",
+        "institution": "University of Houston",
+        "sourceUrl": "https://www.uh.edu/facilities-planning-construction/vendor-resources/owners-design-criteria/master-specs/div-03/03-30-00.pdf",
+        "documentType": "single-section-spec",
+        "pages": 50,
+        "extractableChars": 138930,
+        "parseMs": 1573,
+        "strippedLines": 192,
+        "expectedSections": [
+          "03 30 00"
+        ],
+        "detectedSections": [
+          "03 30 00"
+        ],
+        "falsePositiveSplits": [],
+        "missedSections": [],
+        "notes": "50-page Division 03 Cast-in-Place Concrete master spec with running headers/footers."
+      },
+      {
+        "file": "02_uh_012100.pdf",
+        "institution": "University of Houston",
+        "sourceUrl": "https://www.uh.edu/facilities-planning-construction/vendor-resources/owners-design-criteria/master-specs/div-01/01-21-00.pdf",
+        "documentType": "single-section-spec",
+        "pages": 5,
+        "extractableChars": 9637,
+        "parseMs": 121,
+        "strippedLines": 20,
+        "expectedSections": [
+          "01 21 00"
+        ],
+        "detectedSections": [
+          "01 21 00"
+        ],
+        "falsePositiveSplits": [],
+        "missedSections": [],
+        "notes": "5-page Division 01 Allowances spec using compact 01 2100 section numbering."
+      },
+      {
+        "file": "03_uh_042000.pdf",
+        "institution": "University of Houston",
+        "sourceUrl": "https://www.uh.edu/facilities-planning-construction/vendor-resources/owners-design-criteria/master-specs/div-04/04-20-00.pdf",
+        "documentType": "single-section-spec",
+        "pages": 33,
+        "extractableChars": 82531,
+        "parseMs": 327,
+        "strippedLines": 132,
+        "expectedSections": [
+          "04 20 00"
+        ],
+        "detectedSections": [
+          "04 20 00"
+        ],
+        "falsePositiveSplits": [],
+        "missedSections": [],
+        "notes": "33-page Unit Masonry spec with quoted inline CSI cross-references."
+      },
+      {
+        "file": "04_uh_053123.pdf",
+        "institution": "University of Houston",
+        "sourceUrl": "https://www.uh.edu/facilities-planning-construction/vendor-resources/owners-design-criteria/master-specs/div-05/05-31-23.pdf",
+        "documentType": "single-section-spec",
+        "pages": 7,
+        "extractableChars": 14447,
+        "parseMs": 47,
+        "strippedLines": 28,
+        "expectedSections": [
+          "05 31 23"
+        ],
+        "detectedSections": [
+          "05 31 23"
+        ],
+        "falsePositiveSplits": [],
+        "missedSections": [],
+        "notes": "7-page Steel Roof Decking master spec."
+      },
+      {
+        "file": "05_uh_071413.pdf",
+        "institution": "University of Houston",
+        "sourceUrl": "https://www.uh.edu/facilities-planning-construction/vendor-resources/owners-design-criteria/master-specs/div-07/07-14-13.pdf",
+        "documentType": "single-section-spec",
+        "pages": 10,
+        "extractableChars": 23454,
+        "parseMs": 103,
+        "strippedLines": 49,
+        "expectedSections": [
+          "07 14 13"
+        ],
+        "detectedSections": [
+          "07 14 13"
+        ],
+        "falsePositiveSplits": [],
+        "missedSections": [],
+        "notes": "10-page Hot Fluid-Applied Rubberized Asphalt Waterproofing spec."
+      },
+      {
+        "file": "06_prince_albert_03300.pdf",
+        "institution": "City of Prince Albert (Saskatchewan)",
+        "sourceUrl": "https://www.citypa.ca/en/building-and-development/resources/Documents/Specifications/03300_-_Cast-In-Place_Concrete.pdf",
+        "documentType": "single-section-spec",
+        "pages": 5,
+        "extractableChars": 7590,
+        "parseMs": 69,
+        "strippedLines": 5,
+        "expectedSections": [
+          "03 30 00"
+        ],
+        "detectedSections": [
+          "03 30 00"
+        ],
+        "falsePositiveSplits": [],
+        "missedSections": [],
+        "notes": "5-page municipal spec using legacy 5-digit CSI code (03300) and inline Page X of Y."
+      },
+      {
+        "file": "07_scott_twp_033000.pdf",
+        "institution": "Scott Township (PA)",
+        "sourceUrl": "https://scotttownshipsta.com/wp-content/uploads/2025/05/03-30-00-Cast-In-Place-Concrete.pdf",
+        "documentType": "single-section-spec",
+        "pages": 4,
+        "extractableChars": 6174,
+        "parseMs": 37,
+        "strippedLines": 12,
+        "expectedSections": [
+          "03 30 00"
+        ],
+        "detectedSections": [
+          "03 30 00"
+        ],
+        "falsePositiveSplits": [],
+        "missedSections": [],
+        "notes": "4-page encrypted-metadata municipal spec with DIVISION 3 banner."
+      },
+      {
+        "file": "08_nh_dover_div00_01_100p.pdf",
+        "institution": "City of Dover, NH (HMFH Architects — Dover HS & CTC Conformed Set Vol. 1)",
+        "sourceUrl": "https://www.dover.nh.gov/Assets/government/city-operations/2document/school-building-committee/Volume%201%20Div%200-14%20Specifications.pdf",
+        "documentType": "multi-section-manual",
+        "pages": 100,
+        "extractableChars": 234650,
+        "parseMs": 1000,
+        "strippedLines": 290,
+        "expectedSections": [
+          "00 01 05",
+          "00 01 07",
+          "01 11 00",
+          "01 14 00",
+          "01 22 00",
+          "01 23 00",
+          "01 24 00",
+          "01 31 00",
+          "01 31 19",
+          "01 32 00",
+          "01 33 00",
+          "01 35 43",
+          "01 40 00",
+          "01 50 00"
+        ],
+        "detectedSections": [
+          "00 01 05",
+          "00 01 07",
+          "01 11 00",
+          "01 14 00",
+          "01 22 00",
+          "01 23 00",
+          "01 24 00",
+          "01 31 00",
+          "01 31 19",
+          "01 32 00",
+          "01 33 00",
+          "01 35 43",
+          "01 40 00",
+          "01 50 00"
+        ],
+        "falsePositiveSplits": [],
+        "missedSections": [],
+        "notes": "First 100 consecutive pages extracted losslessly from 1,046-page Project Manual (cover, DOCUMENT 000105/000107, 6-page TOC, 12 Division 01 sections, wrapped cross-refs, submittal forms)."
+      },
+      {
+        "file": "09_uccs_addendum_toc.pdf",
+        "institution": "University of Colorado Colorado Springs (UCCS)",
+        "sourceUrl": "https://vcaf.uccs.edu/sites/g/files/kjihxj1611/files/inline-files/01%20Proj%20Manual%20Cover%20%26%20TOC%20-%20Add%20%232_21280702.pdf",
+        "documentType": "toc-document",
+        "pages": 5,
+        "extractableChars": 8094,
+        "parseMs": 59,
+        "strippedLines": 20,
+        "expectedSections": [],
+        "detectedSections": [],
+        "falsePositiveSplits": [],
+        "missedSections": [],
+        "notes": "5-page Addendum #2 Table of Contents listing 120+ CSI sections (TOC suppression test)."
+      },
+      {
+        "file": "10_nmsu_project_manual_toc.pdf",
+        "institution": "New Mexico State University (NMSU)",
+        "sourceUrl": "https://af.nmsu.edu/_files/docs/Project_Manual_Table_of_Contents_2018_V2.pdf",
+        "documentType": "toc-document",
+        "pages": 8,
+        "extractableChars": 9417,
+        "parseMs": 81,
+        "strippedLines": 24,
+        "expectedSections": [],
+        "detectedSections": [],
+        "falsePositiveSplits": [],
+        "missedSections": [],
+        "notes": "8-page Project Manual Table of Contents listing 170+ CSI sections (TOC suppression test)."
+      }
+    ]
+  },
+  "suite2_verbatimRealPdfPageShift": {
+    "documentsTested": 7,
+    "totalOriginalPagesShifted": 210,
+    "sectionsChecked": 20,
+    "sectionFalsePositives": 0,
+    "sectionFalsePositiveRatePct": 0,
+    "pageByPageBaselineChangedPages": 217,
+    "pageByPageBaselineTotalPages": 217,
+    "perDocument": [
+      {
+        "file": "01_uh_033000.pdf",
+        "origPages": 50,
+        "shiftedPages": 51,
+        "sectionsChecked": 1,
+        "sectionFalsePositives": 0,
+        "pageBaselineChangedPages": 51,
+        "pageBaselineTotalPages": 51
+      },
+      {
+        "file": "02_uh_012100.pdf",
+        "origPages": 5,
+        "shiftedPages": 6,
+        "sectionsChecked": 1,
+        "sectionFalsePositives": 0,
+        "pageBaselineChangedPages": 6,
+        "pageBaselineTotalPages": 6
+      },
+      {
+        "file": "03_uh_042000.pdf",
+        "origPages": 33,
+        "shiftedPages": 34,
+        "sectionsChecked": 1,
+        "sectionFalsePositives": 0,
+        "pageBaselineChangedPages": 34,
+        "pageBaselineTotalPages": 34
+      },
+      {
+        "file": "04_uh_053123.pdf",
+        "origPages": 7,
+        "shiftedPages": 8,
+        "sectionsChecked": 1,
+        "sectionFalsePositives": 0,
+        "pageBaselineChangedPages": 8,
+        "pageBaselineTotalPages": 8
+      },
+      {
+        "file": "05_uh_071413.pdf",
+        "origPages": 10,
+        "shiftedPages": 11,
+        "sectionsChecked": 1,
+        "sectionFalsePositives": 0,
+        "pageBaselineChangedPages": 11,
+        "pageBaselineTotalPages": 11
+      },
+      {
+        "file": "06_prince_albert_03300.pdf",
+        "origPages": 5,
+        "shiftedPages": 6,
+        "sectionsChecked": 1,
+        "sectionFalsePositives": 0,
+        "pageBaselineChangedPages": 6,
+        "pageBaselineTotalPages": 6
+      },
+      {
+        "file": "08_nh_dover_div00_01_100p.pdf",
+        "origPages": 100,
+        "shiftedPages": 101,
+        "sectionsChecked": 14,
+        "sectionFalsePositives": 0,
+        "pageBaselineChangedPages": 101,
+        "pageBaselineTotalPages": 101
+      }
+    ]
+  },
+  "suite3_consolidatedRealManualPlantedEdits": {
+    "basePages": 179,
+    "addendumPages": 176,
+    "baseParagraphsTotal": 1437,
+    "diffMs": 78,
+    "totalSectionsCompared": 21,
+    "unchangedSectionsExpected": 9,
+    "falsePositiveSections": [],
+    "falsePositiveSectionCount": 0,
+    "falsePositiveRatePct": 0,
+    "plantedEditsTotal": 12,
+    "plantedEditsDetected": 12,
+    "plantedEditsMissed": 0,
+    "missRatePct": 0,
+    "riskFlagsExpected": 9,
+    "riskFlagsMatched": 9,
+    "pageByPageRawDiffBaseline": {
+      "changedPages": 179,
+      "totalPages": 179,
+      "flaggedPagePct": 100
+    },
+    "outcomes": [
+      {
+        "id": "E01_011100_owner_responsibility",
+        "sectionCode": "01 11 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "changedParagraphsCount": 1,
+        "riskFlags": [
+          "Directive added: shall"
+        ],
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "E02_012100_allowance_days_and_directive",
+        "sectionCode": "01 21 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "changedParagraphsCount": 1,
+        "riskFlags": [
+          "Threshold / Limit: Minimum",
+          "Currency / Percentage: $45,000",
+          "Allowance / Alternate: allowance",
+          "Directive added: shall"
+        ],
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "E03_012400_deleted_section",
+        "sectionCode": "01 24 00",
+        "expectedType": "deleted",
+        "detectedStatus": "deleted",
+        "renumberedFrom": null,
+        "changedParagraphsCount": 35,
+        "riskFlags": [
+          "Thickness / Gauge / Mil: 11 inch",
+          "Threshold / Limit: at least",
+          "Currency / Percentage: $20,000.00"
+        ],
+        "detected": true,
+        "riskFlagMatched": null
+      },
+      {
+        "id": "E04_012500_added_section",
+        "sectionCode": "01 25 00",
+        "expectedType": "added",
+        "detectedStatus": "added",
+        "renumberedFrom": null,
+        "changedParagraphsCount": 1,
+        "riskFlags": [
+          "Threshold / Limit: minimum",
+          "Substitution / Basis of Design: no substitutions"
+        ],
+        "detected": true,
+        "riskFlagMatched": null
+      },
+      {
+        "id": "E05_013119_renumbered_to_013120",
+        "sectionCode": "01 31 20",
+        "expectedType": "renumbered",
+        "detectedStatus": "unchanged",
+        "renumberedFrom": "01 31 19",
+        "changedParagraphsCount": 0,
+        "riskFlags": [],
+        "detected": true,
+        "riskFlagMatched": null
+      },
+      {
+        "id": "E06_013300_submittal_stamp_area",
+        "sectionCode": "01 33 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "changedParagraphsCount": 1,
+        "riskFlags": [
+          "Directive: shall → may"
+        ],
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "E07_033000_uh_concrete_psi_upgrade",
+        "sectionCode": "03 30 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "changedParagraphsCount": 1,
+        "riskFlags": [
+          "PSI / Strength / AIC: 5000 psi",
+          "Thickness / Gauge / Mil: 20 mil",
+          "Threshold / Limit: Minimum",
+          "Directive added: shall"
+        ],
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "E08_033001_prince_albert_lump_sum",
+        "sectionCode": "03 30 01",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "changedParagraphsCount": 1,
+        "riskFlags": [
+          "Currency / Percentage: $18,500",
+          "Furnish & Install / By Owner: by Owner",
+          "Allowance / Alternate: unit price"
+        ],
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "E09_033002_scott_twp_concrete_warranty",
+        "sectionCode": "03 30 02",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "changedParagraphsCount": 1,
+        "riskFlags": [
+          "PSI / Strength / AIC: 4500 psi",
+          "Fire / Time Rating: 5-year",
+          "Threshold / Limit: minimum",
+          "Warranty / Indemnification: warranty"
+        ],
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "E10_042000_uh_masonry_curing_hours",
+        "sectionCode": "04 20 00",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "changedParagraphsCount": 1,
+        "riskFlags": [
+          "Fire / Time Rating: 12 hours",
+          "Threshold / Limit: at least",
+          "Fire / Time Rating: 24 hours",
+          "Threshold / Limit: not less than"
+        ],
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "E11_053123_uh_steel_deck_scope",
+        "sectionCode": "05 31 23",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "changedParagraphsCount": 1,
+        "riskFlags": [
+          "Thickness / Gauge / Mil: 18 gauge",
+          "Furnish & Install / By Owner: install only"
+        ],
+        "detected": true,
+        "riskFlagMatched": true
+      },
+      {
+        "id": "E12_071413_uh_waterproofing_psi_upgrade",
+        "sectionCode": "07 14 13",
+        "expectedType": "modified",
+        "detectedStatus": "modified",
+        "renumberedFrom": null,
+        "changedParagraphsCount": 1,
+        "riskFlags": [
+          "PSI / Strength / AIC: 60-psi",
+          "Threshold / Limit: minimum",
+          "PSI / Strength / AIC: 100-psi",
+          "Threshold / Limit: not less than"
+        ],
+        "detected": true,
+        "riskFlagMatched": true
+      }
+    ]
+  }
+}

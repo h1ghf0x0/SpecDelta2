@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    --paper-canvas: #f6f7f9;
+    --paper-sheet: #ffffff;
+    --ink-primary: #0f172a;
+    --cobalt-primary: #1e40af;
+    --amber-risk: #d97706;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--paper-canvas);
+    color: var(--ink-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.blueprint-grid {
+  background-color: #f6f7f9;
+  background-image:
+    linear-gradient(to right, rgba(30, 64, 175, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 64, 175, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.drafting-transition {
+  transition-property: opacity, transform, background-color, border-color, color;
+  transition-duration: 160ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drafting-transition,
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .print-break-inside-avoid {
+    break-inside: avoid;
+  }
+}

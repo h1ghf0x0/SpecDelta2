@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-11-26T09:29:51.460Z",
+  "nodeVersion": "v22.23.5",
+  "totalBenchmarkDurationMs": 6196,
+  "peakRssMb": 574.4,
+  "suites": {
+    "sample_fixture_15p": {
+      "oldPages": 7,
+      "newPages": 8,
+      "oldParseMs": 1323,
+      "newParseMs": 53,
+      "diffMs": 47,
+      "xlsxExportMs": 2,
+      "xlsxByteLength": 6141,
+      "oldStrippedLines": 21,
+      "newStrippedLines": 24,
+      "sectionsMatched": 8,
+      "expectedChangedCount": 7,
+      "truePositives": 7,
+      "falsePositives": 0,
+      "recall": 1,
+      "shiftedSection230593Status": "unchanged",
+      "shiftedSection230593Pages": "6 -> 7",
+      "pageByPageRawDiffBaseline": {
+        "changedPages": 8,
+        "totalPages": 8,
+        "flaggedPagePct": 100
+      }
+    },
+    "scale_stress_300p": {
+      "oldPages": 300,
+      "newPages": 303,
+      "totalPagesParsed": 603,
+      "oldPdfSizeKb": 339,
+      "newPdfSizeKb": 347,
+      "oldParseMs": 1457,
+      "newParseMs": 1385,
+      "diffMs": 87,
+      "totalPipelineMs": 2929,
+      "pagesPerSecond": 212,
+      "xlsxExportMs": 1,
+      "xlsxByteLength": 15858,
+      "oldStrippedLines": 600,
+      "newStrippedLines": 606,
+      "sectionsTotal": 31,
+      "unchangedSectionsCorrect": 24,
+      "expectedChangedCount": 7,
+      "truePositives": 7,
+      "falsePositives": 0,
+      "recall": 1,
+      "renumberedCount": 1,
+      "pageByPageRawDiffBaseline": {
+        "changedPages": 303,
+        "totalPages": 303,
+        "flaggedPagePct": 100
+      }
+    },
+    "adversarial_probes": {
+      "calendarMonthMayFalseFlags": 0,
+      "typoInShallParagraphFalseFlags": 0,
+      "multiModalDeletionDetected": true,
+      "multiModalDeletionAvoidedFalseSwap": true,
+      "titleCaseFooterStripped": true,
+      "proseCrossRefPreserved": true,
+      "csvFormulaInjectionGuarded": true
+    }
+  }
+}
