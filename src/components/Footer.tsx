@@ -27,7 +27,7 @@ export function Footer({ onNavigate }: FooterProps) {
               SpecDelta
             </a>
             <p className="text-sm text-slate-600 leading-relaxed max-w-xs">
-              Section-aware Project Manual diffing and CSI MasterFormat splitting built for commercial estimators. Runs locally in your browser.
+              Spec-change checking for estimators. Your files stay on your computer.
             </p>
           </div>
 
@@ -60,7 +60,7 @@ export function Footer({ onNavigate }: FooterProps) {
                   onClick={(e) => handleLink(e, '/benchmark')}
                   className="hover:text-[#1E40AF] transition-colors"
                 >
-                  Synthetic Spec Benchmark
+                  Accuracy on real project manuals
                 </a>
               </li>
             </ul>
@@ -128,9 +128,9 @@ export function Footer({ onNavigate }: FooterProps) {
           <div className="flex flex-wrap items-center gap-2">
             <span>SpecDelta</span>
             <span aria-hidden="true">·</span>
-            <span>Client-Side Web Worker PDF Engine</span>
+            <span>Private Browser-Based PDF Engine</span>
             <span aria-hidden="true">·</span>
-            <span>No Server PDF Storage</span>
+            <span>Nothing Uploaded</span>
           </div>
           <div className="flex flex-wrap items-center gap-4">
             <a

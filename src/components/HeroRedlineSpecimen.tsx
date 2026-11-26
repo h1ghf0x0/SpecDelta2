@@ -115,7 +115,7 @@ export function HeroRedlineSpecimen({
         <div className="px-4 sm:px-5 py-3.5 border-b border-slate-200 bg-slate-50/80 flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
             <div className="text-[11px] font-medium text-slate-500">
-              Live Engine Specimen · Unclouded Addendum Preview
+              Sample Addendum Preview · Silent Changes Caught
             </div>
             <div className="mt-0.5 font-display text-sm font-bold text-slate-900 truncate">
               <span className="font-mono text-[#1E40AF] mr-2 tabular-nums">
@@ -228,7 +228,7 @@ export function HeroRedlineSpecimen({
       {/* Specimen Action Footer */}
       <div className="px-4 sm:px-5 py-3 border-t border-slate-200 bg-slate-50/70 flex flex-wrap items-center justify-between gap-3">
         <span className="text-xs text-slate-600">
-          Generated live by SpecDelta&apos;s word-diff &amp; context-risk engine
+          Compares CSI sections word-by-word and flags cost &amp; scope shifts
         </span>
         <button
           type="button"
@@ -236,7 +236,7 @@ export function HeroRedlineSpecimen({
           onClick={onLoadSample}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E40AF] hover:text-[#1E3A8A] disabled:opacity-50 drafting-transition cursor-pointer whitespace-nowrap shrink-0"
         >
-          Run Full Sample Diff
+          Try a sample addendum
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>

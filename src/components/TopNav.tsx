@@ -97,7 +97,7 @@ export function TopNav({ currentRoute, onNavigate, onLoadSample, isBusy }: TopNa
             }}
             className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-semibold text-white bg-[#1E40AF] rounded-md hover:bg-[#1E3A8A] disabled:opacity-50 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
           >
-            Load Sample Spec
+            Try a sample addendum
           </button>
 
           <button
@@ -137,7 +137,7 @@ export function TopNav({ currentRoute, onNavigate, onLoadSample, isBusy }: TopNa
             }}
             className="w-full mt-2 px-4 py-2.5 text-sm font-semibold text-white bg-[#1E40AF] rounded-md hover:bg-[#1E3A8A] disabled:opacity-50 cursor-pointer"
           >
-            Load Sample Spec
+            Try a sample addendum
           </button>
         </div>
       )}

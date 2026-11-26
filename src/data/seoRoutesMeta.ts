@@ -9,12 +9,12 @@ export interface RouteSeoMeta {
 
 export const SEO_ROUTE_META: Record<AppRoute, RouteSeoMeta> = {
   '/': {
-    title: 'SpecDelta – Section-Aware Construction Spec Diff & CSI Splitter',
+    title: 'SpecDelta – Compare Spec Book Addenda by CSI Section',
     description:
-      'Compare 600-page Project Manuals and Addenda locally in your browser by CSI section—no page-shift false positives, instant Excel redlines, and CSI PDF splitting.',
-    h1: 'Section-Aware Construction Spec Diff Checker',
+      'Compare a spec book and its addendum by CSI section. See what really changed, flagged for cost and risk, exported to Excel. Nothing leaves your browser.',
+    h1: 'Addendum just dropped? See what actually changed.',
     summary:
-      'Compare original Project Manuals and Addenda locally in your browser by CSI MasterFormat section, auto-strip headers and footers, flag tolerance and scope changes, and export clean Excel (.xlsx) change logs.',
+      'Drop in the original spec book and the addendum. SpecDelta lines them up section by section and shows the changes that touch your price, like 3,000 → 4,500 psi or "install only" → "furnish and install", instead of 200 pages of false alarms.',
   },
   '/split-spec-book': {
     title: 'Free CSI MasterFormat Spec Book Splitter | SpecDelta',
@@ -25,12 +25,12 @@ export const SEO_ROUTE_META: Record<AppRoute, RouteSeoMeta> = {
       'Select individual CSI MasterFormat divisions or sections from a full Project Manual PDF and download a clean standalone PDF locally in your browser.',
   },
   '/vs-bluebeam': {
-    title: 'Bluebeam Compare Documents Alternative for Spec Books | SpecDelta',
+    title: 'Bluebeam Compare Alternative for Spec Books | SpecDelta',
     description:
-      'Stop Bluebeam Revu from flagging 200+ pages red after a 2-line addendum shift. Compare Project Manuals by CSI section locally in your browser.',
-    h1: 'Why Bluebeam Compare Documents Breaks on 600-Page Spec Books',
+      'Stop page-by-page PDF compare from lighting up 200+ pages after a 2-line addendum shift. Compare Project Manuals by CSI section in your browser.',
+    h1: 'Why Page-by-Page Compare Breaks When Spec Books Reflow',
     summary:
-      'Bluebeam Revu compares PDFs page-by-page. SpecDelta aligns Project Manuals by normalized CSI section so page shifts do not trigger false positives.',
+      'Visual overlays compare page numbers instead of specification sections. SpecDelta aligns Project Manuals by normalized CSI section so page shifts do not trigger false alarms.',
   },
   '/acrobat-alternative': {
     title: 'Adobe Acrobat Compare PDF Alternative for Project Manuals | SpecDelta',
@@ -49,12 +49,12 @@ export const SEO_ROUTE_META: Record<AppRoute, RouteSeoMeta> = {
       'Audit re-issued Project Manuals end-to-end to catch silent section deletions, tolerance creep, and narrative mismatches with deterministic word-level diffs.',
   },
   '/benchmark': {
-    title: 'Benchmark: Real, Held-Out & Sealed Project Manual Corpus Results | SpecDelta',
+    title: 'Accuracy on Real Project Manuals | SpecDelta',
     description:
-      'Measured counts and Clopper-Pearson 95% confidence intervals across 6 sealed manuals (1,734p), 11 held-out manuals (6,315p), 10 real corpus PDFs (227p), and a 603p stress run.',
-    h1: 'Measured Accuracy, Counts & Confidence Intervals Across Real Project Manuals',
+      '58 of 59 sealed and 109 of 110 held-out planted edits caught; 0 of 244 sealed and 0 of 644 held-out sections falsely flagged when pages shifted.',
+    h1: '58 of 59 Sealed & 109 of 110 Held-Out Changes Caught on Real Manuals',
     summary:
-      'Reproducible measurements with Clopper-Pearson 95% intervals across 6 sealed release manuals (1,734p: 41/41 bookmark CSI sections matched [100%], 0/244 symmetric shift false positives, 58/59 edits caught [98.3%]), 11 held-out manuals (6,315p: 233/234 bookmark sections [99.6%], 0/644 unseen symmetric shift FPs, 109/110 edits [99.1%]), 10 baseline PDFs (227p: 12/12 edits [95% CI 73.5–100%]), and 1,984p UNT memory profiling (540.4 MB RSS / 270.3 MB JS heap).',
+      '58 of 59 planted changes caught on 6 untouched public manuals (1,734 pages) and 109 of 110 on 10 held-out manuals (5,269 pages), with 0 of 244 sealed and 0 of 644 held-out sections falsely flagged when only page numbers moved (full Clopper-Pearson 95% confidence intervals below).',
   },
   '/compare-division-03-concrete-specs': {
     title: 'Compare Division 03 Concrete Specs & Addenda | SpecDelta',

@@ -1288,8 +1288,8 @@ export function DiffWorkbench({
                 <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded px-2.5 py-1 tabular-nums">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#15803D] shrink-0" />
                   {sentToGeminiInfo
-                    ? `Local parse · Sent ${sentToGeminiInfo.sectionsSent} of ${sentToGeminiInfo.totalChanged} changed sections to Google Gemini`
-                    : 'Local only — specs on device'}
+                    ? `Local check · Sent ${sentToGeminiInfo.sectionsSent} of ${sentToGeminiInfo.totalChanged} changed sections to Google Gemini`
+                    : 'Files stay on your computer'}
                 </span>
                 <button
                   type="button"
@@ -1341,27 +1341,32 @@ export function DiffWorkbench({
                 <div className="lg:col-span-6 flex flex-col justify-between gap-5">
                   <div>
                     <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-600 mb-2.5">
-                      <span>Section-Aware Diff Engine</span>
+                      <span>Construction Project Manuals</span>
                       <span aria-hidden="true">·</span>
-                      <span>CSI MasterFormat Alignment</span>
+                      <span>Section-by-Section CSI Comparison</span>
                       <span aria-hidden="true">·</span>
-                      <span>Header &amp; Footer Noise Filtering</span>
+                      <span>Flagged for Cost &amp; Risk</span>
                     </div>
                     <h1
                       className="font-display font-bold tracking-tight text-slate-900 leading-[1.1] text-balance"
                       style={{ fontSize: 'clamp(1.95rem, 3.1vw, 2.75rem)' }}
                     >
-                      Compare 600-Page Project Manuals by CSI Section—Not Page Number
+                      Addendum just dropped? See what actually changed.
                     </h1>
                     <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
-                      Stop visual page-overlay diffs from flagging hundreds of shifted pages when an addendum moves paragraphs across page breaks. SpecDelta parses PDFs locally in a Web Worker, strips repeating headers, and surfaces money and risk shifts cleanly.
+                      Drop in the original spec book and the addendum. SpecDelta lines them up section by section and shows the changes that touch your price, like 3,000 → 4,500 psi or &ldquo;install only&rdquo; → &ldquo;furnish and install&rdquo;, instead of 200 pages of false alarms.
                     </p>
                   </div>
 
-                  {/* Dual PDF Dropzones with Immediate Per-File Worker Parsing */}
-                  <div className="grid grid-cols-1 gap-3">
-                    {renderSlotCard('old', oldSlot, oldInputRef)}
-                    {renderSlotCard('new', newSlot, newInputRef)}
+                  {/* Dual PDF Dropzones with Up-Front OCR Limit Notice */}
+                  <div className="space-y-2.5">
+                    <div className="grid grid-cols-1 gap-3">
+                      {renderSlotCard('old', oldSlot, oldInputRef)}
+                      {renderSlotCard('new', newSlot, newInputRef)}
+                    </div>
+                    <p className="text-[11px] text-slate-500">
+                      Works on selectable-text PDFs. Scanned raster sheets without a text layer aren&apos;t OCR&apos;d and are flagged for manual review.
+                    </p>
                   </div>
                 </div>
 
@@ -1380,8 +1385,8 @@ export function DiffWorkbench({
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-800">
                     <span>
                       {isDiffing
-                        ? 'Aligning CSI MasterFormat sections and running Myers word diff...'
-                        : 'Processing Project Manual PDFs in local Web Workers'}
+                        ? 'Matching CSI sections and highlighting price & scope changes...'
+                        : 'Reading your Project Manual PDFs on your computer...'}
                     </span>
                     <span className="font-mono text-slate-500 tabular-nums">
                       {Object.keys(fileProgressMap).length} file{Object.keys(fileProgressMap).length === 1 ? '' : 's'}
@@ -1448,9 +1453,9 @@ export function DiffWorkbench({
                   ) : (
                     <span>
                       <strong className="font-semibold text-slate-900">
-                        Local Only — Parsed in Browser Web Workers.
+                        Your bid documents never leave your computer. Nothing is uploaded.
                       </strong>{' '}
-                      Your specs stay on device unless you opt into the Google Gemini brief.
+                      Open your browser&apos;s Network tab while dropping files to verify; the AI brief is optional and off unless you turn it on.
                     </span>
                   )}
                 </div>
@@ -1483,7 +1488,7 @@ export function DiffWorkbench({
                     onClick={() => void handleLoadSample()}
                     className="px-4 py-2 text-xs sm:text-sm font-semibold text-[#1E40AF] bg-white border border-[#1E40AF]/30 rounded-md hover:bg-blue-50 disabled:opacity-50 transition-colors cursor-pointer whitespace-nowrap shrink-0"
                   >
-                    {isGeneratingSample ? 'Building Sample PDFs...' : 'Load Sample Project Manual'}
+                    {isGeneratingSample ? 'Building Sample PDFs...' : 'Try a sample addendum'}
                   </button>
                   <button
                     type="button"

@@ -67,7 +67,7 @@ test('npm start (tsx server.ts) boots production build, uses APP_URL canonical, 
   const bluebeamHtml = await bluebeamRes.text();
   assert.equal(bluebeamRes.status, 200);
   assert.ok(
-    bluebeamHtml.includes('<title>Bluebeam Compare Documents Alternative for Spec Books | SpecDelta</title>')
+    bluebeamHtml.includes('<title>Bluebeam Compare Alternative for Spec Books | SpecDelta</title>')
   );
   assert.ok(bluebeamHtml.includes(`<link rel="canonical" href="${canonicalOrigin}/vs-bluebeam" />`));
 

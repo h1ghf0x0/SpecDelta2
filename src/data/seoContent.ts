@@ -35,13 +35,13 @@ export const SEO_PAGES: Record<Exclude<AppRoute, '/' | '/split-spec-book'>, SeoP
   '/vs-bluebeam': {
     route: '/vs-bluebeam',
     category: 'Comparison',
-    metaTitle: 'Bluebeam Compare Documents Alternative for Spec Books | SpecDelta',
+    metaTitle: 'Bluebeam Compare Alternative for Spec Books | SpecDelta',
     metaDescription:
-      'Stop Bluebeam Revu from flagging 200+ pages red after a 2-line addendum shift. Compare Project Manuals by CSI section locally in your browser.',
-    eyebrow: 'Comparison · Bluebeam Revu vs. SpecDelta',
-    headline: 'Why Bluebeam Compare Documents Breaks on 600-Page Spec Books',
+      'Stop page-by-page PDF compare from lighting up 200+ pages after a 2-line addendum shift. Compare Project Manuals by CSI section in your browser.',
+    eyebrow: 'Comparison · Page-by-Page Overlays vs. SpecDelta',
+    headline: 'Why Page-by-Page Compare Breaks When Spec Books Reflow',
     summary:
-      'Bluebeam Revu compares PDFs visually page-by-page. When an architect adds three lines in Division 01 or concrete mixes in Division 03, every downstream paragraph shifts onto the next page—causing Bluebeam to highlight hundreds of unchanged pages in red.',
+      'Visual PDF tools like Bluebeam Revu excel at 2D plan overlays, because drawing sheets stay fixed. When an architect adds three lines in Division 01 or concrete mixes in Division 03, every downstream paragraph shifts onto the next page—lighting up hundreds of unchanged spec pages red.',
     heroImage: 'desk',
     heroImageAlt: 'Commercial construction Project Manual binder open beside architectural scale on drafting desk',
     keyGotchas: [
@@ -194,9 +194,9 @@ export const SEO_PAGES: Record<Exclude<AppRoute, '/' | '/split-spec-book'>, SeoP
     metaDescription:
       'Detect silent spec edits, deleted CSI sections, and unclouded addendum changes in re-issued Project Manuals without relying on architect narratives.',
     eyebrow: 'Estimator Guide · Addendum Risk Control',
-    headline: 'How to Catch Unclouded Addendum Changes in a Re-Issued Spec Book',
+    headline: 'The Addendum Lists What Was Remembered. SpecDelta Shows What Changed.',
     summary:
-      'Addendum cover narratives routinely omit subtle edits—such as silently deleting a masonry section, bumping membrane thickness from 60 mil to 80 mil, or reverting an Addendum 1 substitution in Addendum 2.',
+      'An architect’s addendum narrative summarizes what the team remembered to call out—often missing quiet deletions, membrane thickness bumps from 60 mil to 80 mil, or scope swaps that hit your margin after award.',
     heroImage: 'desk',
     heroImageAlt: 'Open specification binder showing numbered construction specification clauses',
     keyGotchas: [
@@ -252,13 +252,13 @@ export const SEO_PAGES: Record<Exclude<AppRoute, '/' | '/split-spec-book'>, SeoP
   '/benchmark': {
     route: '/benchmark',
     category: 'Benchmark',
-    metaTitle: 'Benchmark: Real, Held-Out & Sealed Project Manual Corpus Results | SpecDelta',
+    metaTitle: 'Accuracy on Real Project Manuals | SpecDelta',
     metaDescription:
-      'Measured counts and Clopper-Pearson 95% confidence intervals across 6 sealed manuals (1,734p), 11 held-out manuals (6,315p), 10 real corpus PDFs (227p), and a 603p stress run.',
-    eyebrow: 'Benchmark Study · Sealed (1,734p), Held-Out (6,315p) & Real Corpus (227p)',
-    headline: 'Measured Accuracy, Counts & Confidence Intervals Across Real Project Manuals',
+      '58 of 59 sealed and 109 of 110 held-out planted edits caught; 0 of 244 sealed and 0 of 644 held-out sections falsely flagged when pages shifted.',
+    eyebrow: 'Accuracy Study · Real Public Project Manuals (9,776 Pages Tested)',
+    headline: '58 of 59 Sealed & 109 of 110 Held-Out Changes Caught. 0 False Page-Shift Alarms.',
     summary:
-      'Reproducible measurements with exact Clopper-Pearson 95% confidence intervals (statsCi.ts) across four suites: (1) npm run benchmark:sealed on 6 fresh public manuals never used for tuning (1,734p: 41/41 bookmark CSI sections matched [100%, 95% CI 91.4–100%], 0/244 symmetric shift false positives [<= 1.2% upper bound], 58/59 planted edits caught [98.3%, 95% CI 90.9–100%]); (2) npm run benchmark:heldout on 11 manuals (6,315p: 233/234 bookmark sections matched [99.6%], 0/644 unseen & 0/111 Dover symmetric shift false positives, 6/318 asymmetric bookmark warnings flagged 6/6 times, 109/110 planted edits caught [99.1%, 95% CI 95.0–100%]); (3) npm run benchmark:real on 10 PDFs (227p: 12/12 edits caught [95% CI 73.5–100%]); and (4) 603p stress (2.8s, 221 pages/sec) plus 1,984p UNT memory profile (540.4 MB RSS / 270.3 MB JS heap).',
+      'Across 6 untouched public manuals (1,734 pages) and 10 held-out manuals (5,269 pages): 58 of 59 sealed and 109 of 110 held-out planted changes caught ("planted" means real-clause edits we inserted ourselves so we know the exact right answer), and 0 of 244 sealed plus 0 of 644 held-out sections falsely flagged when only page numbers moved (full Clopper-Pearson 95% confidence intervals and raw counts below). Scanned sheets without a text layer aren’t OCR’d and are flagged to check manually.',
     heroImage: 'desk',
     heroImageAlt: 'Specification benchmark desk setup with Project Manual and structural sheets',
     keyGotchas: [
