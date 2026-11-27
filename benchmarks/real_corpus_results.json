@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-11-26T10:35:42.353Z",
+  "generatedAt": "2026-11-26T11:21:21.584Z",
   "nodeVersion": "v22.23.5",
-  "totalDurationMs": 11500,
-  "peakRssMb": 600.8,
+  "totalDurationMs": 11364,
+  "peakRssMb": 623.1,
   "corpusOverview": {
     "pdfCount": 10,
     "specBodyPdfCount": 8,
     "tocTrapPdfCount": 2,
     "totalRealPages": 227,
-    "totalExtractableChars": 534924,
+    "totalExtractableChars": 535838,
     "totalStrippedNoiseLines": 772,
     "totalExpectedCsiSections": 21
   },
   "summaryRates": {
-    "parserSectionSplitFalsePositiveRatePct": 0,
+    "parserSectionSplitFalsePositiveRatePct": 25,
     "parserSectionMissRatePct": 0,
     "verbatimPageShiftDiffFalsePositiveRatePct": 0,
     "consolidatedManualFalsePositiveRatePct": 0,
@@ -25,15 +25,15 @@
   },
   "confidenceIntervals": {
     "parserSectionSplitFalsePositives": {
-      "events": 0,
-      "trials": 21,
-      "pointPct": 0,
+      "events": 7,
+      "trials": 28,
+      "pointPct": 25,
       "ci95TwoSidedPct": [
-        0,
-        16.1
+        10.7,
+        44.9
       ],
-      "oneSided95UpperPct": 13.3,
-      "summary": "0/21 (95% one-sided upper bound ≤ 13.3%; two-sided 95% CI 0.0–16.1%)"
+      "oneSided95UpperPct": 41.9,
+      "summary": "7/28 (25%; two-sided 95% CI 10.7–44.9%)"
     },
     "parserSectionMisses": {
       "events": 0,
@@ -104,10 +104,10 @@
   },
   "suite1_realPdfParserAudit": {
     "expectedSections": 21,
-    "detectedSections": 21,
-    "falsePositiveSplits": 0,
+    "detectedSections": 28,
+    "falsePositiveSplits": 7,
     "missedSections": 0,
-    "falsePositiveRatePct": 0,
+    "falsePositiveRatePct": 25,
     "missRatePct": 0,
     "perDocument": [
       {
@@ -116,8 +116,8 @@
         "sourceUrl": "https://www.uh.edu/facilities-planning-construction/vendor-resources/owners-design-criteria/master-specs/div-03/03-30-00.pdf",
         "documentType": "single-section-spec",
         "pages": 50,
-        "extractableChars": 138930,
-        "parseMs": 2278,
+        "extractableChars": 139014,
+        "parseMs": 1761,
         "strippedLines": 192,
         "expectedSections": [
           "03 30 00"
@@ -136,7 +136,7 @@
         "documentType": "single-section-spec",
         "pages": 5,
         "extractableChars": 9637,
-        "parseMs": 187,
+        "parseMs": 157,
         "strippedLines": 20,
         "expectedSections": [
           "01 21 00"
@@ -173,8 +173,8 @@
         "sourceUrl": "https://www.uh.edu/facilities-planning-construction/vendor-resources/owners-design-criteria/master-specs/div-05/05-31-23.pdf",
         "documentType": "single-section-spec",
         "pages": 7,
-        "extractableChars": 14447,
-        "parseMs": 50,
+        "extractableChars": 14539,
+        "parseMs": 56,
         "strippedLines": 28,
         "expectedSections": [
           "05 31 23"
@@ -193,7 +193,7 @@
         "documentType": "single-section-spec",
         "pages": 10,
         "extractableChars": 23454,
-        "parseMs": 120,
+        "parseMs": 136,
         "strippedLines": 49,
         "expectedSections": [
           "07 14 13"
@@ -211,8 +211,8 @@
         "sourceUrl": "https://www.citypa.ca/en/building-and-development/resources/Documents/Specifications/03300_-_Cast-In-Place_Concrete.pdf",
         "documentType": "single-section-spec",
         "pages": 5,
-        "extractableChars": 7590,
-        "parseMs": 73,
+        "extractableChars": 7598,
+        "parseMs": 97,
         "strippedLines": 5,
         "expectedSections": [
           "03 30 00"
@@ -231,7 +231,7 @@
         "documentType": "single-section-spec",
         "pages": 4,
         "extractableChars": 6174,
-        "parseMs": 89,
+        "parseMs": 56,
         "strippedLines": 12,
         "expectedSections": [
           "03 30 00"
@@ -249,8 +249,8 @@
         "sourceUrl": "https://www.dover.nh.gov/Assets/government/city-operations/2document/school-building-committee/Volume%201%20Div%200-14%20Specifications.pdf",
         "documentType": "multi-section-manual",
         "pages": 100,
-        "extractableChars": 234650,
-        "parseMs": 1234,
+        "extractableChars": 234764,
+        "parseMs": 1379,
         "strippedLines": 290,
         "expectedSections": [
           "00 01 05",
@@ -295,7 +295,7 @@
         "documentType": "toc-document",
         "pages": 5,
         "extractableChars": 8094,
-        "parseMs": 65,
+        "parseMs": 74,
         "strippedLines": 20,
         "expectedSections": [],
         "detectedSections": [],
@@ -309,12 +309,28 @@
         "sourceUrl": "https://af.nmsu.edu/_files/docs/Project_Manual_Table_of_Contents_2018_V2.pdf",
         "documentType": "toc-document",
         "pages": 8,
-        "extractableChars": 9417,
-        "parseMs": 117,
+        "extractableChars": 10033,
+        "parseMs": 78,
         "strippedLines": 24,
         "expectedSections": [],
-        "detectedSections": [],
-        "falsePositiveSplits": [],
+        "detectedSections": [
+          "00 01 01",
+          "07 42 13.19",
+          "10 14 23.16",
+          "10 21 13.17",
+          "22 13 36.01",
+          "22 13 36.02",
+          "22 13 36.03"
+        ],
+        "falsePositiveSplits": [
+          "00 01 01",
+          "07 42 13.19",
+          "10 14 23.16",
+          "10 21 13.17",
+          "22 13 36.01",
+          "22 13 36.02",
+          "22 13 36.03"
+        ],
         "missedSections": [],
         "notes": "8-page Project Manual Table of Contents listing 170+ CSI sections (TOC suppression test)."
       }
@@ -395,10 +411,10 @@
     ]
   },
   "suite3_consolidatedRealManualPlantedEdits": {
-    "basePages": 179,
-    "addendumPages": 176,
+    "basePages": 180,
+    "addendumPages": 178,
     "baseParagraphsTotal": 1437,
-    "diffMs": 54,
+    "diffMs": 96,
     "totalSectionsCompared": 22,
     "unchangedSectionsExpected": 10,
     "falsePositiveSections": [],
@@ -411,8 +427,8 @@
     "riskFlagsExpected": 9,
     "riskFlagsMatched": 9,
     "pageByPageRawDiffBaseline": {
-      "changedPages": 179,
-      "totalPages": 179,
+      "changedPages": 180,
+      "totalPages": 180,
       "flaggedPagePct": 100
     },
     "outcomes": [
@@ -437,9 +453,9 @@
         "renumberedFrom": null,
         "changedParagraphsCount": 1,
         "riskFlags": [
-          "Threshold / Limit: Minimum",
           "Currency / Percentage: $45,000",
           "Allowance / Alternate: allowance",
+          "Threshold / Limit: Minimum",
           "Directive added: shall"
         ],
         "detected": true,
@@ -453,9 +469,9 @@
         "renumberedFrom": null,
         "changedParagraphsCount": 35,
         "riskFlags": [
-          "Thickness / Gauge / Mil: 11 inch",
-          "Threshold / Limit: at least",
-          "Currency / Percentage: $20,000.00"
+          "Currency / Percentage: $20,000.00",
+          "Structural Load / Dimension: 11 inch",
+          "Threshold / Limit: at least"
         ],
         "detected": true,
         "riskFlagMatched": null
@@ -468,8 +484,8 @@
         "renumberedFrom": null,
         "changedParagraphsCount": 1,
         "riskFlags": [
-          "Threshold / Limit: minimum",
-          "Substitution / Basis of Design: no substitutions"
+          "Substitution / Basis of Design: no substitutions",
+          "Threshold / Limit: minimum"
         ],
         "detected": true,
         "riskFlagMatched": null
@@ -523,8 +539,8 @@
         "changedParagraphsCount": 1,
         "riskFlags": [
           "Currency / Percentage: $18,500",
-          "Furnish & Install / By Owner: by Owner",
-          "Allowance / Alternate: unit price"
+          "Allowance / Alternate: unit price",
+          "Furnish & Install / By Owner: by Owner"
         ],
         "detected": true,
         "riskFlagMatched": true
@@ -537,10 +553,10 @@
         "renumberedFrom": null,
         "changedParagraphsCount": 1,
         "riskFlags": [
+          "Warranty / Indemnification: warranty",
           "PSI / Strength / AIC: 4500 psi",
           "Fire / Time Rating: 5-year",
-          "Threshold / Limit: minimum",
-          "Warranty / Indemnification: warranty"
+          "Threshold / Limit: minimum"
         ],
         "detected": true,
         "riskFlagMatched": true
@@ -569,8 +585,8 @@
         "renumberedFrom": null,
         "changedParagraphsCount": 1,
         "riskFlags": [
-          "Thickness / Gauge / Mil: 18 gauge",
-          "Furnish & Install / By Owner: install only"
+          "Furnish & Install / By Owner: install only",
+          "Thickness / Gauge / Mil: 18 gauge"
         ],
         "detected": true,
         "riskFlagMatched": true

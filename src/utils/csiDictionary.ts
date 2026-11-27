@@ -54,9 +54,13 @@ export function normalizeCsiCode(raw: string): string {
   return cleaned;
 }
 
+import type { RiskSeverity } from '../types/spec';
+
 export interface RiskPattern {
   label: string;
-  category: 'Tolerance / Unit' | 'Scope / Liability' | 'Cost / Allowance';
+  category: 'Tolerance / Unit' | 'Scope / Liability' | 'Cost / Allowance' | 'Standard / Product';
+  severity: RiskSeverity;
+  weight: number;
   regex: RegExp;
 }
 
@@ -67,62 +71,158 @@ export interface RiskPattern {
  */
 export const RISK_PATTERNS: RiskPattern[] = [
   {
-    label: 'PSI / Strength / AIC',
-    category: 'Tolerance / Unit',
-    regex: /\b\d[\d,]*(?:\.\d+)?[-\s]*(?:psi|ksi|mpa|k?aic)\b/gi,
-  },
-  {
-    label: 'Thickness / Gauge / Mil',
-    category: 'Tolerance / Unit',
-    regex: /\b\d+(?:\.\d+)?[-\s]*(?:mil|mils|mm|cm|ga|gauge|in\.|inch|inches)\b/gi,
-  },
-  {
-    label: 'Fire / Time Rating',
-    category: 'Tolerance / Unit',
-    regex: /\b\d+(?:\.\d+)?[-\s]?(?:hr|hour|hours|min|minute|minutes|year|years|yr|yrs)\b/gi,
-  },
-  {
-    label: 'Threshold / Limit',
-    category: 'Tolerance / Unit',
-    regex: /\b(?:minimum|not\s+less\s+than|at\s+least|maximum|not\s+exceeding|not\s+to\s+exceed|no\s+more\s+than)\b/gi,
-  },
-  {
     label: 'Currency / Percentage',
     category: 'Cost / Allowance',
+    severity: 'critical',
+    weight: 10,
     regex: /(?:\$\s?\d[\d,]*(?:\.\d{1,2})?|\b\d+(?:\.\d+)?%)/gi,
+  },
+  {
+    label: 'Allowance / Alternate',
+    category: 'Cost / Allowance',
+    severity: 'critical',
+    weight: 10,
+    regex: /\b(?:allowance|allowances|alternate|alternates|unit\s+price|add\s+alternate|deduct)\b/gi,
   },
   {
     label: 'Furnish & Install / By Owner',
     category: 'Scope / Liability',
+    severity: 'critical',
+    weight: 10,
     regex: /\b(?:furnish\s+and\s+install|furnish\s+only|install\s+only|by\s+owner|owner[- ]furnished|contractor[- ]installed|ofci|cfci)\b/gi,
   },
   {
     label: 'Warranty / Indemnification',
     category: 'Scope / Liability',
+    severity: 'critical',
+    weight: 9,
     regex: /\b(?:warranty|warranties|guaranteed?|ndl|liquidated\s+damages|retainage)\b/gi,
-  },
-  {
-    label: 'Allowance / Alternate',
-    category: 'Cost / Allowance',
-    regex: /\b(?:allowance|allowances|alternate|alternates|unit\s+price|add\s+alternate|deduct)\b/gi,
   },
   {
     label: 'Substitution / Basis of Design',
     category: 'Scope / Liability',
-    regex: /\b(?:basis\s+of\s+design|approved\s+equal|or\s+equal|no\s+substitutions?|sole\s+source)\b/gi,
+    severity: 'high',
+    weight: 8,
+    regex: /\b(?:basis\s+of\s+design|approved\s+equal|or\s+equal|no\s+substitutions?|sole\s+source|acceptable\s+manufacturers?|manufacturers?)\b/gi,
   },
   {
     label: 'Contractual Exclusion',
     category: 'Scope / Liability',
+    severity: 'high',
+    weight: 8,
     regex: /\b(?:shall\s+not|may\s+not|delete|deleted|omitted|excluded|mandatory|prohibited)\b/gi,
   },
+  {
+    label: 'PSI / Strength / AIC',
+    category: 'Tolerance / Unit',
+    severity: 'high',
+    weight: 8,
+    regex: /\b\d[\d,]*(?:\.\d+)?[-\s]*(?:psi|ksi|mpa|k?aic|sccr)\b/gi,
+  },
+  {
+    label: 'Electrical Rating',
+    category: 'Tolerance / Unit',
+    severity: 'high',
+    weight: 7,
+    regex: /\b\d[\d,]*(?:\.\d+)?[-\s]*(?:amps?|amperes?|kv|kva|kw|volts?|watts?|hz|poles?|hp|bhp)\b/gi,
+  },
+  {
+    label: 'Electrical Rating',
+    category: 'Tolerance / Unit',
+    severity: 'high',
+    weight: 7,
+    regex: /\b\d[\d,]*(?:\.\d+)?(?:A|V|W|kVA|kW|kV)\b(?=\s|[.,;:/)-]|$)|\bNEMA\s+[A-Z0-9]+\b/g,
+  },
+  {
+    label: 'HVAC / Thermal / Envelope',
+    category: 'Tolerance / Unit',
+    severity: 'high',
+    weight: 7,
+    regex: /\b\d[\d,]*(?:\.\d+)?[-\s]*(?:cfm|gpm|btuh?|mbh|tons?|seer|eer|afue|cop|dba|nc|pa|in\.\s*w\.?g\.?(?!\w))\b|\b(?:U[-\s]*\d+\.\d+|SHGC\s*\d+\.\d+|R[-\s]*\d+(?:\.\d+)?)\b/gi,
+  },
+  {
+    label: 'Structural Load / Dimension',
+    category: 'Tolerance / Unit',
+    severity: 'high',
+    weight: 6,
+    regex: /\b\d[\d,]*(?:\.\d+)?[-\s]*(?:psf|pcf|plf|kips?|ft|feet|foot|inch(?:es)?|sf|sq\s*ft|lf|cy)\b|\b\d[\d,]*(?:\.\d+)?[-\s]*in\.(?!\w)/gi,
+  },
+  {
+    label: 'Thickness / Gauge / Mil',
+    category: 'Tolerance / Unit',
+    severity: 'high',
+    weight: 7,
+    regex: /\b\d+(?:\.\d+)?[-\s]*(?:mil|mils|mm|cm|ga|gauge)\b/gi,
+  },
+  {
+    label: 'Referenced Standard',
+    category: 'Standard / Product',
+    severity: 'medium',
+    weight: 5,
+    regex: /\b(?:ASTM\s+[A-Z]\s*\d+(?:[A-Z0-9./-]*)|UL\s+\d+[A-Z]?|NFPA\s+\d+[A-Z]?|ANSI(?:\/[A-Z0-9]+)?\s+[A-Z0-9.-]+|ASHRAE\s+[\d.]+|ACI\s+\d+[A-Z0-9.-]*|AWS\s+[A-Z]\d+(?:\.\d+)?|IEEE\s+[A-Z]?\d+|SMACNA|AISC|FM\s+\d+)\b/gi,
+  },
+  {
+    label: 'Fire / Time Rating',
+    category: 'Tolerance / Unit',
+    severity: 'high',
+    weight: 6,
+    regex: /\b\d+(?:\.\d+)?[-\s]?(?:hr|hour|hours|min|minute|minutes|year|years|yr|yrs)\b/gi,
+  },
+  {
+    label: 'Threshold / Limit',
+    category: 'Tolerance / Unit',
+    severity: 'medium',
+    weight: 5,
+    regex: /\b(?:minimum|not\s+less\s+than|at\s+least|maximum|not\s+exceeding|not\s+to\s+exceed|no\s+more\s+than)\b/gi,
+  },
 ];
+
+const SEVERITY_MAP = new Map<string, { severity: RiskSeverity; weight: number }>(
+  RISK_PATTERNS.map((p) => [p.label, { severity: p.severity, weight: p.weight }])
+);
+
+export function computeSectionRiskMetrics(riskFlags: string[]): {
+  riskSeverity?: RiskSeverity;
+  riskScore: number;
+} {
+  if (riskFlags.length === 0) return { riskScore: 0 };
+  let score = 0;
+  let maxRank = 0; // 1 medium, 2 high, 3 critical
+
+  for (const flag of riskFlags) {
+    const label = flag.split(':')[0]?.trim() ?? '';
+    if (label === 'Directive' || label === 'Directive added' || label === 'Directive removed') {
+      score += 7;
+      maxRank = Math.max(maxRank, 2);
+      continue;
+    }
+    if (label === 'Manufacturer / Product') {
+      score += 8;
+      maxRank = Math.max(maxRank, 2);
+      continue;
+    }
+    const meta = SEVERITY_MAP.get(label);
+    if (meta) {
+      score += meta.weight;
+      const rank = meta.severity === 'critical' ? 3 : meta.severity === 'high' ? 2 : 1;
+      maxRank = Math.max(maxRank, rank);
+    } else {
+      score += 4;
+      maxRank = Math.max(maxRank, 1);
+    }
+  }
+
+  const riskSeverity: RiskSeverity =
+    maxRank >= 3 || score >= 18 ? 'critical' : maxRank >= 2 || score >= 10 ? 'high' : 'medium';
+
+  return { riskSeverity, riskScore: score };
+}
 
 export function detectRiskFlags(text: string): string[] {
   const found = new Set<string>();
   for (const pattern of RISK_PATTERNS) {
-    pattern.regex.lastIndex = 0;
-    const matches = text.match(pattern.regex);
+    const re = new RegExp(pattern.regex.source, pattern.regex.flags);
+    const matches = text.match(re);
     if (matches && matches.length > 0) {
       const sample = matches[0].trim();
       found.add(`${pattern.label}: ${sample}`);
@@ -178,9 +278,45 @@ export function extractDirectiveDelta(oldText: string, newText: string): string 
   return `Directive removed: ${removed[0]}`;
 }
 
+const MANUFACTURER_LABEL_RE =
+  /\b(?:acceptable\s+manufacturers?|manufacturers?|basis\s+of\s+design|products?|models?|series|supplied\s+by|manufactured\s+by)\b\s*[:\-]\s*|\b(?:acceptable\s+manufacturers?|basis\s+of\s+design|supplied\s+by|manufactured\s+by)\s+/gi;
+const BRAND_CAPTURE_RE =
+  /^([A-Z](?:[A-Za-z0-9&/-]|\.(?=[A-Za-z0-9]))*(?:\s+[A-Z0-9](?:[A-Za-z0-9&/-]|\.(?=[A-Za-z0-9]))*){0,4})/;
+
+function extractProductBrands(text: string): string[] {
+  const out: string[] = [];
+  const labelRe = new RegExp(MANUFACTURER_LABEL_RE.source, 'gi');
+  let m: RegExpExecArray | null;
+  while ((m = labelRe.exec(text)) !== null) {
+    const tail = text.slice(m.index + m[0].length);
+    const brandMatch = tail.match(BRAND_CAPTURE_RE);
+    if (brandMatch) {
+      const val = brandMatch[1].trim();
+      if (val.length >= 2) out.push(val);
+    }
+  }
+  return out;
+}
+
+export function extractManufacturerDelta(oldText: string, newText: string): string | null {
+  if (!oldText || !newText) return null;
+  const oldBrands = extractProductBrands(oldText);
+  const newBrands = extractProductBrands(newText);
+  if (oldBrands.length === 0 || newBrands.length === 0) return null;
+
+  for (let i = 0; i < Math.max(oldBrands.length, newBrands.length); i++) {
+    const o = oldBrands[i] ?? oldBrands[0];
+    const n = newBrands[i] ?? newBrands[0];
+    if (o && n && o.toLowerCase() !== n.toLowerCase()) {
+      return `Manufacturer / Product: ${o} → ${n}`;
+    }
+  }
+  return null;
+}
+
 /**
  * Evaluates risk flags strictly from changed diff spans (never unchanged background sentences)
- * plus any modal directive shift detected between old and new text.
+ * plus any modal directive or manufacturer shift detected between old and new text.
  */
 export function detectDeltaRiskFlags(
   tokens: Array<{ op: -1 | 0 | 1; text: string; riskMatch?: string }>,
@@ -214,7 +350,7 @@ export function detectDeltaRiskFlags(
     const tokEnd = tokStart + tok.text.length;
 
     for (const pattern of RISK_PATTERNS) {
-      const re = new RegExp(pattern.regex.source, 'gi');
+      const re = new RegExp(pattern.regex.source, pattern.regex.flags);
       let match: RegExpExecArray | null;
       while ((match = re.exec(combined)) !== null) {
         const mStart = match.index;
@@ -233,13 +369,18 @@ export function detectDeltaRiskFlags(
     found.add(directiveDelta);
   }
 
+  const mfrDelta = extractManufacturerDelta(oldText, newText);
+  if (mfrDelta) {
+    found.add(mfrDelta);
+  }
+
   return Array.from(found);
 }
 
 export function findRiskMatchInToken(tokenText: string): string | undefined {
   for (const pattern of RISK_PATTERNS) {
-    pattern.regex.lastIndex = 0;
-    if (pattern.regex.test(tokenText)) {
+    const re = new RegExp(pattern.regex.source, pattern.regex.flags);
+    if (re.test(tokenText)) {
       return pattern.category;
     }
   }
@@ -264,7 +405,7 @@ export function extractContextRiskMatch(
   const tokenEnd = tokenStart + tokenText.length;
 
   for (const pattern of RISK_PATTERNS) {
-    const re = new RegExp(pattern.regex.source, 'gi');
+    const re = new RegExp(pattern.regex.source, pattern.regex.flags);
     let match: RegExpExecArray | null;
     while ((match = re.exec(combined)) !== null) {
       const mStart = match.index;
@@ -280,10 +421,30 @@ export function extractContextRiskMatch(
 
 const DELTA_UNIT_GROUPS: Array<{ label: string; regex: RegExp }> = [
   { label: 'Strength', regex: /\b\d[\d,]*(?:\.\d+)?[-\s]*(?:psi|ksi|mpa)\b/gi },
-  { label: 'Gauge / Mil', regex: /\b\d+(?:\.\d+)?[-\s]*(?:mil|mils|mm|ga|gauge)\b/gi },
+  { label: 'Gauge / Mil', regex: /\b\d+(?:\.\d+)?[-\s]*(?:mil|mils|mm|cm|ga|gauge)\b/gi },
+  {
+    label: 'Electrical',
+    regex: /\b\d[\d,]*(?:\.\d+)?[-\s]*(?:amps?|amperes?|kv|kva|kw|volts?|watts?|hz|hp|bhp)\b/gi,
+  },
+  {
+    label: 'Electrical',
+    regex: /\b\d[\d,]*(?:\.\d+)?(?:A|V|W|kVA|kW|kV)\b(?=\s|[.,;:/)-]|$)/g,
+  },
+  {
+    label: 'HVAC / Envelope',
+    regex: /\b\d[\d,]*(?:\.\d+)?[-\s]*(?:cfm|gpm|btuh?|mbh|tons?|seer|eer|cop|in\.\s*w\.?g\.?(?!\w))\b|\b(?:U[-\s]*\d+\.\d+|SHGC\s*\d+\.\d+|R[-\s]*\d+(?:\.\d+)?)\b/gi,
+  },
+  {
+    label: 'Load / Dimension',
+    regex: /\b\d[\d,]*(?:\.\d+)?[-\s]*(?:psf|pcf|plf|kips?|ft|feet|foot|inch(?:es)?|sf|sq\s*ft|lf|cy)\b|\b\d[\d,]*(?:\.\d+)?[-\s]*in\.(?!\w)/gi,
+  },
+  {
+    label: 'Standard',
+    regex: /\b(?:ASTM\s+[A-Z]\s*\d+(?:[A-Z0-9./-]*)|UL\s+\d+[A-Z]?|NFPA\s+\d+[A-Z]?|ANSI(?:\/[A-Z0-9]+)?\s+[A-Z0-9.-]+|ASHRAE\s+[\d.]+|ACI\s+\d+[A-Z0-9.-]*)\b/gi,
+  },
   { label: 'Rating / Term', regex: /\b\d+(?:\.\d+)?[-\s]?(?:hr|hour|hours|year|years|yr|yrs)\b/gi },
   { label: 'Cost', regex: /(?:\$\s?\d[\d,]*(?:\.\d{1,2})?|\b\d+(?:\.\d+)?%)/gi },
-  { label: 'AIC', regex: /\b\d[\d,]*[-\s]*(?:k?aic)\b/gi },
+  { label: 'AIC', regex: /\b\d[\d,]*[-\s]*(?:k?aic|sccr)\b/gi },
 ];
 
 export function extractParagraphDeltaChips(oldText: string, newText: string): string[] {
@@ -291,10 +452,10 @@ export function extractParagraphDeltaChips(oldText: string, newText: string): st
   if (!oldText || !newText) return chips;
 
   for (const group of DELTA_UNIT_GROUPS) {
-    const oldMatches = (oldText.match(new RegExp(group.regex.source, 'gi')) ?? []).map((s) =>
+    const oldMatches = (oldText.match(new RegExp(group.regex.source, group.regex.flags)) ?? []).map((s) =>
       s.replace(/\s+/g, ' ').trim()
     );
-    const newMatches = (newText.match(new RegExp(group.regex.source, 'gi')) ?? []).map((s) =>
+    const newMatches = (newText.match(new RegExp(group.regex.source, group.regex.flags)) ?? []).map((s) =>
       s.replace(/\s+/g, ' ').trim()
     );
     if (oldMatches.length > 0 && newMatches.length > 0) {
@@ -315,6 +476,11 @@ export function extractParagraphDeltaChips(oldText: string, newText: string): st
   const newScope = newText.match(scopeRe)?.[1];
   if (oldScope && newScope && oldScope.toLowerCase() !== newScope.toLowerCase()) {
     chips.push(`Scope: ${oldScope} → ${newScope}`);
+  }
+
+  const mfrDelta = extractManufacturerDelta(oldText, newText);
+  if (mfrDelta) {
+    chips.push(mfrDelta.replace('Manufacturer / Product:', 'Product:'));
   }
 
   const directiveDelta = extractDirectiveDelta(oldText, newText);

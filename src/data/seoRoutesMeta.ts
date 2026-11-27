@@ -11,10 +11,10 @@ export const SEO_ROUTE_META: Record<AppRoute, RouteSeoMeta> = {
   '/': {
     title: 'SpecDelta – Compare Spec Book Addenda by CSI Section',
     description:
-      'Compare a spec book and its addendum by CSI section. See what really changed, flagged for cost and risk, exported to Excel. Nothing leaves your browser.',
+      'Compare a spec book, partial addendum, or narrative addendum by CSI section. Runs locally in your browser by default; optional Gemini brief sends changed excerpts only when clicked.',
     h1: 'Addendum just dropped? See what actually changed.',
     summary:
-      'Drop in the original spec book and the addendum. SpecDelta lines them up section by section and shows the changes that touch your price, like 3,000 → 4,500 psi or "install only" → "furnish and install", instead of 200 pages of false alarms.',
+      'Drop in the original spec book and the addendum (full reissue, partial section reissue, or narrative item sheet). SpecDelta lines them up section by section and shows the changes that touch your price instead of 200 pages of false alarms.',
   },
   '/split-spec-book': {
     title: 'Free CSI MasterFormat Spec Book Splitter | SpecDelta',
@@ -51,10 +51,10 @@ export const SEO_ROUTE_META: Record<AppRoute, RouteSeoMeta> = {
   '/benchmark': {
     title: 'Accuracy on Real Project Manuals | SpecDelta',
     description:
-      '58 of 59 sealed and 109 of 110 held-out planted edits caught; 0 of 244 sealed and 0 of 644 held-out sections falsely flagged when pages shifted.',
-    h1: '58 of 59 Sealed & 109 of 110 Held-Out Changes Caught on Real Manuals',
+      'Synthetic regression tests on public manuals: 58 of 59 sealed and 109 of 110 held-out planted edits caught; 0 of 244 sealed and 0 of 644 held-out sections falsely flagged when pages shifted.',
+    h1: '58 of 59 Sealed & 109 of 110 Held-Out Planted Edits Caught on Public Manuals',
     summary:
-      '58 of 59 planted changes caught on 6 untouched public manuals (1,734 pages) and 109 of 110 on 10 held-out manuals (5,269 pages), with 0 of 244 sealed and 0 of 644 held-out sections falsely flagged when only page numbers moved (full Clopper-Pearson 95% confidence intervals below).',
+      'Synthetic regression tests on 6 untouched public manuals (1,734 pages) and 10 held-out manuals (5,269 pages): 58 of 59 sealed and 109 of 110 held-out planted clause edits caught, with 0 of 244 sealed and 0 of 644 held-out sections falsely flagged on verbatim page shifts. Scanned sheets without a text layer aren’t OCR’d and are flagged for manual review.',
   },
   '/compare-division-03-concrete-specs': {
     title: 'Compare Division 03 Concrete Specs & Addenda | SpecDelta',
@@ -123,3 +123,12 @@ export const SEO_ROUTE_META: Record<AppRoute, RouteSeoMeta> = {
 };
 
 export const VALID_APP_ROUTES = new Set<AppRoute>(Object.keys(SEO_ROUTE_META) as AppRoute[]);
+
+export const TRADE_GUIDE_ROUTES: Array<{ route: AppRoute; code: string; label: string }> = [
+  { route: '/compare-division-03-concrete-specs', code: '03', label: 'Concrete' },
+  { route: '/compare-division-07-thermal-moisture-specs', code: '07', label: 'Thermal & Moisture' },
+  { route: '/compare-division-08-doors-hardware-specs', code: '08', label: 'Doors & Hardware' },
+  { route: '/compare-division-09-finishes-specs', code: '09', label: 'Finishes' },
+  { route: '/compare-division-23-hvac-specs', code: '23', label: 'HVAC' },
+  { route: '/compare-division-26-electrical-specs', code: '26', label: 'Electrical' },
+];

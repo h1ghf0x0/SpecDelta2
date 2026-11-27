@@ -586,5 +586,221 @@ test('compareParsedBooks sets bookmarkAsymmetryWarning only when one book has CS
   assert.equal(asym.diagnostics.newOutlineBookmarkCount, 0);
 });
 
+test('partial addendum mode marks unmentioned baseline sections as not-reissued instead of deleted', () => {
+  const mkSec = (code: string, title: string, text: string, page: number) => ({
+    id: `${code}__${page}`,
+    rawCode: `SECTION ${code}`,
+    normalizedCode: code,
+    division: code.slice(0, 2),
+    divisionTitle: 'Division',
+    title,
+    startPage: page,
+    endPage: page,
+    text,
+    paragraphs: [text],
+  });
+
+  const oldBook: SingleSpecParseOutput = {
+    fileName: 'Base_4Sections.pdf',
+    pageCount: 4,
+    parseTimeMs: 10,
+    scannedWarning: false,
+    strippedPatterns: [],
+    sections: [
+      mkSec('03 30 00', 'CAST-IN-PLACE CONCRETE', 'Concrete compressive strength shall be 3,000 psi.', 1),
+      mkSec('04 22 00', 'CONCRETE UNIT MASONRY', 'Provide ASTM C90 normalweight CMU.', 2),
+      mkSec('08 71 00', 'DOOR HARDWARE', 'Furnish and install locksets.', 3),
+      mkSec('26 24 13', 'SWITCHBOARDS', 'Main bus shall be 65,000 AIC.', 4),
+    ],
+  };
+
+  const partialAddendum: SingleSpecParseOutput = {
+    fileName: 'Addendum_1_Partial.pdf',
+    pageCount: 1,
+    parseTimeMs: 5,
+    scannedWarning: false,
+    strippedPatterns: [],
+    sections: [
+      mkSec('03 30 00', 'CAST-IN-PLACE CONCRETE', 'Concrete compressive strength shall be 4,500 psi.', 1),
+    ],
+  };
+
+  const diff = compareParsedBooks(oldBook, partialAddendum);
+  assert.equal(diff.diagnostics.resolvedMode, 'partial-reissue');
+  assert.equal(diff.diagnostics.notReissuedCount, 3);
+
+  const concrete = diff.results.find((r) => r.sectionCode === '03 30 00');
+  const masonry = diff.results.find((r) => r.sectionCode === '04 22 00');
+  const hardware = diff.results.find((r) => r.sectionCode === '08 71 00');
+  const switchboard = diff.results.find((r) => r.sectionCode === '26 24 13');
+
+  assert.equal(concrete?.status, 'modified');
+  assert.equal(masonry?.status, 'not-reissued');
+  assert.equal(hardware?.status, 'not-reissued');
+  assert.equal(switchboard?.status, 'not-reissued');
+  assert.equal(diff.results.some((r) => r.status === 'deleted'), false);
+
+  const exportRows = buildChangeLogRows(diff.results);
+  assert.equal(exportRows.length, 1);
+  assert.equal(exportRows[0][1], '03 30 00');
+});
+
+test('narrative addendum parser patches baseline sections from Item directives and handles deletions', () => {
+  const baseSections = [
+    {
+      id: '04 22 00__1',
+      rawCode: 'SECTION 04 22 00',
+      normalizedCode: '04 22 00',
+      division: '04',
+      divisionTitle: 'Masonry',
+      title: 'CONCRETE UNIT MASONRY',
+      startPage: 1,
+      endPage: 2,
+      text: 'Provide ASTM C90 CMU.',
+      paragraphs: ['1.1 Provide ASTM C90 CMU.'],
+    },
+    {
+      id: '08 71 00__3',
+      rawCode: 'SECTION 08 71 00',
+      normalizedCode: '08 71 00',
+      division: '08',
+      divisionTitle: 'Openings',
+      title: 'DOOR HARDWARE',
+      startPage: 3,
+      endPage: 4,
+      text: '2.3.A Contractor shall install only card readers furnished by Owner.',
+      paragraphs: [
+        '2.3.A Contractor shall install only card readers furnished by Owner.',
+        '2.3.B Hinges shall be UL 10C fire rated.',
+      ],
+    },
+    {
+      id: '26 24 13__5',
+      rawCode: 'SECTION 26 24 13',
+      normalizedCode: '26 24 13',
+      division: '26',
+      divisionTitle: 'Electrical',
+      title: 'SWITCHBOARDS',
+      startPage: 5,
+      endPage: 6,
+      text: 'Switchboard rated 22,000 AIC.',
+      paragraphs: ['1.2 Switchboard rated 22,000 AIC.'],
+    },
+  ];
+
+  const oldBook: SingleSpecParseOutput = {
+    fileName: 'BaseManual.pdf',
+    pageCount: 6,
+    parseTimeMs: 12,
+    scannedWarning: false,
+    strippedPatterns: [],
+    sections: baseSections,
+  };
+
+  const narrativeBook: SingleSpecParseOutput = {
+    fileName: 'Addendum_2_Narrative.pdf',
+    pageCount: 1,
+    parseTimeMs: 5,
+    scannedWarning: false,
+    strippedPatterns: [],
+    sections: [
+      {
+        id: '00 01 00__1',
+        rawCode: 'FRONT MATTER',
+        normalizedCode: '00 01 00',
+        division: '00',
+        divisionTitle: 'Procurement & Contracting Requirements',
+        title: 'Project Manual Front Matter',
+        startPage: 1,
+        endPage: 1,
+        text: 'ADDENDUM NO. 2',
+        paragraphs: [
+          'Item 3: Section 08 71 00, 2.3.A, delete "install only card readers furnished by Owner", add "furnish and install card readers complete".',
+          'Item 4: Delete Section 04 22 00 in its entirety.',
+        ],
+      },
+    ],
+  };
+
+  const diff = compareParsedBooks(oldBook, narrativeBook);
+  assert.equal(diff.diagnostics.resolvedMode, 'narrative-addendum');
+  assert.equal(diff.diagnostics.narrativeDirectiveCount, 2);
+  assert.equal(diff.diagnostics.narrativeMatchedSectionCount, 2);
+
+  const hardware = diff.results.find((r) => r.sectionCode === '08 71 00');
+  const masonry = diff.results.find((r) => r.sectionCode === '04 22 00');
+  const switchboard = diff.results.find((r) => r.sectionCode === '26 24 13');
+
+  assert.equal(hardware?.status, 'modified');
+  assert.equal(hardware?.narrativeApplied, true);
+  assert.ok(hardware?.changedParagraphs[0]?.narrativeSource?.includes('Item 3'));
+  assert.ok(hardware?.riskFlags.some((f) => f.includes('Furnish & Install')));
+
+  assert.equal(masonry?.status, 'deleted');
+  assert.equal(masonry?.narrativeApplied, true);
+
+  assert.equal(switchboard?.status, 'not-reissued');
+});
+
+test('risk engine detects electrical, HVAC, structural, standard, and manufacturer shifts while folding comma/case noise', () => {
+  const oldText =
+    'Basis of Design: Trane Model A1. Supply 400 CFM at 20 amp, 5 HP, U-0.36 SHGC 0.35, 80 psf, 2 ft by 3 in. curb per ASTM C90 and UL 10C.';
+  const newText =
+    'Basis of Design: Carrier Series X2. Supply 650 CFM at 30 amp, 7.5 HP, U-0.30 SHGC 0.25, 100 psf, 3 ft by 4 in. curb per ASTM C150 and NFPA 13.';
+  const diff = computeWordDiff(oldText, newText);
+  const flags = detectDeltaRiskFlags(diff.tokens, oldText, newText);
+
+  assert.ok(flags.some((f) => f.startsWith('Electrical Rating:')));
+  assert.ok(flags.some((f) => f.startsWith('HVAC / Thermal / Envelope:')));
+  assert.ok(flags.some((f) => f.startsWith('Structural Load / Dimension:')));
+  assert.ok(flags.some((f) => f.startsWith('Referenced Standard:')));
+  assert.ok(flags.some((f) => f.startsWith('Manufacturer / Product:')));
+
+  const chips = extractParagraphDeltaChips(oldText, newText);
+  assert.ok(chips.some((c) => c.includes('CFM')));
+
+  // Formatting-only edits (4000 vs 4,000 and capitalization) produce 0 word diff & 0 risk flags
+  const fmtDiff = computeWordDiff(
+    'Concrete strength shall be 4000 psi minimum.',
+    'CONCRETE strength shall be 4,000 PSI minimum.'
+  );
+  assert.equal(fmtDiff.addedWords, 0);
+  assert.equal(fmtDiff.deletedWords, 0);
+  assert.deepEqual(
+    detectDeltaRiskFlags(
+      fmtDiff.tokens,
+      'Concrete strength shall be 4000 psi minimum.',
+      'CONCRETE strength shall be 4,000 PSI minimum.'
+    ),
+    []
+  );
+});
+
+test('assemblePageLinesFromSpans separates 2-column prose without interleaving and preserves schedule table cells', () => {
+  const spans = [];
+  // 14 two-column rows (left column x=60..240, right column x=330..520) on a 612pt wide page
+  for (let i = 0; i < 14; i++) {
+    const y = 700 - i * 16;
+    spans.push({ str: `Left row ${i + 1}`, transform: [1, 0, 0, 1, 60, y], width: 140 });
+    spans.push({ str: `Right row ${i + 1}`, transform: [1, 0, 0, 1, 330, y], width: 140 });
+  }
+  const { lines } = assemblePageLinesFromSpans(spans, 1, 792, 612);
+  assert.equal(lines.length, 28);
+  assert.equal(lines[0].text, 'Left row 1');
+  assert.equal(lines[13].text, 'Left row 14');
+  assert.equal(lines[14].text, 'Right row 1');
+  assert.equal(lines[27].text, 'Right row 14');
+
+  // Wide tabular hardware schedule row (3+ cells) keeps pipe column delimiters
+  const tableSpans = [
+    { str: 'HW-01', transform: [1, 0, 0, 1, 60, 600], width: 40 },
+    { str: 'Mortise Lockset', transform: [1, 0, 0, 1, 180, 600], width: 90 },
+    { str: 'Schlage L9050', transform: [1, 0, 0, 1, 360, 600], width: 80 },
+    { str: 'UL 10C', transform: [1, 0, 0, 1, 500, 600], width: 45 },
+  ];
+  const tableOut = assemblePageLinesFromSpans(tableSpans, 2, 792, 612);
+  assert.equal(tableOut.lines[0].text, 'HW-01 | Mortise Lockset | Schlage L9050 | UL 10C');
+});
+
 
 

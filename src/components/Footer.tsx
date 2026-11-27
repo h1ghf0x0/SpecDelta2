@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import { TRADE_GUIDE_ROUTES } from '../data/seoContent';
+import { TRADE_GUIDE_ROUTES } from '../data/seoRoutesMeta';
 import type { AppRoute } from '../types/spec';
 
 interface FooterProps {
@@ -27,7 +27,7 @@ export function Footer({ onNavigate }: FooterProps) {
               SpecDelta
             </a>
             <p className="text-sm text-slate-600 leading-relaxed max-w-xs">
-              Spec-change checking for estimators. Your files stay on your computer.
+              Section-aware spec diffing for estimators. Full PDFs stay in your browser; AI brief is strictly opt-in.
             </p>
           </div>
 
@@ -128,9 +128,9 @@ export function Footer({ onNavigate }: FooterProps) {
           <div className="flex flex-wrap items-center gap-2">
             <span>SpecDelta</span>
             <span aria-hidden="true">·</span>
-            <span>Private Browser-Based PDF Engine</span>
+            <span>Local Browser PDF Engine</span>
             <span aria-hidden="true">·</span>
-            <span>Nothing Uploaded</span>
+            <span>Full Manuals Never Uploaded (Opt-In AI Brief Only)</span>
           </div>
           <div className="flex flex-wrap items-center gap-4">
             <a

@@ -14,7 +14,13 @@ export type AppRoute =
   | '/privacy'
   | '/terms';
 
-export type DiffStatus = 'modified' | 'added' | 'deleted' | 'unchanged';
+export type ComparisonMode = 'auto' | 'conformed' | 'partial';
+
+export type ResolvedComparisonMode = 'conformed' | 'partial-reissue' | 'narrative-addendum';
+
+export type DiffStatus = 'modified' | 'added' | 'deleted' | 'unchanged' | 'not-reissued';
+
+export type RiskSeverity = 'critical' | 'high' | 'medium';
 
 export interface StrippedPattern {
   pattern: string;
@@ -53,6 +59,7 @@ export interface ChangedParagraph {
   tokens: WordDiffToken[];
   riskFlags: string[];
   deltaChips?: string[];
+  narrativeSource?: string;
 }
 
 export interface DiffSectionResult {
@@ -70,10 +77,14 @@ export interface DiffSectionResult {
   fullOldText: string;
   fullNewText: string;
   riskFlags: string[];
+  riskSeverity?: RiskSeverity;
+  riskScore?: number;
   addedWords: number;
   deletedWords: number;
   spacingNormalized: boolean;
   renumberedFrom?: string;
+  narrativeApplied?: boolean;
+  narrativeItemRefs?: string[];
 }
 
 export interface NoiseFilterConfig {
@@ -111,6 +122,12 @@ export interface ParseDiagnostics {
   bookmarkAsymmetryWarning?: boolean;
   appliedNoiseConfig?: NoiseFilterConfig;
   renumberedCount?: number;
+  requestedMode?: ComparisonMode;
+  resolvedMode?: ResolvedComparisonMode;
+  notReissuedCount?: number;
+  narrativeDirectiveCount?: number;
+  narrativeMatchedSectionCount?: number;
+  narrativeUnmatchedDirectives?: string[];
 }
 
 export interface DiffRunOutput {

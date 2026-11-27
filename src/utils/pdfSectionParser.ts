@@ -106,12 +106,63 @@ export function matchCsiHeader(
   return null;
 }
 
+function joinLineItems(items: SpanItem[], isBodyLine: boolean): string {
+  const sorted = [...items].sort((a, b) => a.x - b.x);
+  let lineText = '';
+  let prevXEnd: number | null = null;
+  let prevFontSize = 10;
+  let prevHadTrailingSpace = false;
+
+  // Count distinct wide column gaps (>= 1.6x font size and >= 14pt) to distinguish tables (3+ cols) from normal spacing
+  let wideGapCount = 0;
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = sorted[i - 1];
+    const curr = sorted[i];
+    const gap = curr.x - (prev.x + prev.width);
+    const colGapThreshold = Math.max(14, Math.min(prev.fontSize, curr.fontSize) * 1.6);
+    if (gap > colGapThreshold) wideGapCount++;
+  }
+  const useTableDelimiter = isBodyLine && wideGapCount >= 2;
+
+  for (const item of sorted) {
+    const hasLeadingSpace = /^\s/.test(item.str);
+    const hasTrailingSpace = /\s$/.test(item.str);
+    const trimmed = item.str.trim();
+    if (!trimmed) continue;
+
+    if (prevXEnd !== null) {
+      const gap = item.x - prevXEnd;
+      const spaceThreshold = Math.max(2.0, Math.min(prevFontSize, item.fontSize) * 0.25);
+      const colGapThreshold = Math.max(14, Math.min(prevFontSize, item.fontSize) * 1.6);
+      if (useTableDelimiter && gap > colGapThreshold) {
+        if (!lineText.endsWith(' | ')) {
+          lineText = lineText.trimEnd() + ' | ';
+        }
+      } else if (
+        (prevHadTrailingSpace || hasLeadingSpace || gap > spaceThreshold) &&
+        !lineText.endsWith(' ')
+      ) {
+        lineText += ' ';
+      }
+    }
+
+    lineText += trimmed;
+    prevXEnd = item.x + item.width;
+    prevFontSize = item.fontSize;
+    prevHadTrailingSpace = hasTrailingSpace;
+  }
+
+  return lineText.replace(/\s+/g, ' ').trim();
+}
+
 export function assemblePageLinesFromSpans(
   rawItems: ReadonlyArray<unknown>,
   pageNum: number,
-  pageHeight: number
+  pageHeight: number,
+  pageWidth = 612
 ): { lines: RawPageLine[]; pageChars: number } {
   const spans: SpanItem[] = [];
+  let maxObservedX = pageWidth;
   for (const rawItem of rawItems) {
     if (
       rawItem &&
@@ -129,6 +180,8 @@ export function assemblePageLinesFromSpans(
         typeof item.width === 'number' && item.width > 0
           ? item.width
           : item.str.length * fontSize * 0.5;
+      const xEnd = tx[4] + itemWidth;
+      if (xEnd > maxObservedX) maxObservedX = xEnd;
       spans.push({
         str: item.str,
         x: tx[4],
@@ -152,44 +205,118 @@ export function assemblePageLinesFromSpans(
     }
   }
 
+  // Detect true 2-column body layouts so left-column and right-column sentences are not interleaved
+  const effectiveWidth = Math.max(pageWidth, maxObservedX);
+  const gutterLeft = effectiveWidth * 0.46;
+  const gutterRight = effectiveWidth * 0.52;
+  let bodyLineCount = 0;
+  let splitColumnLines = 0;
+  let crossingGutterLines = 0;
+  let leftOnlyBody = 0;
+  let rightOnlyBody = 0;
+
+  for (const group of lineGroups) {
+    const yPct = Math.max(0, Math.min(1, 1 - group.y / (pageHeight || 792)));
+    if (yPct <= 0.09 || yPct >= 0.91) continue;
+    bodyLineCount++;
+    const hasCrossing = group.items.some(
+      (it) => it.x < gutterLeft && it.x + it.width > gutterRight
+    );
+    if (hasCrossing) {
+      crossingGutterLines++;
+      continue;
+    }
+    const leftItems = group.items.filter((it) => it.x + it.width <= gutterRight);
+    const rightItems = group.items.filter((it) => it.x >= gutterLeft);
+    if (leftItems.length > 0 && rightItems.length > 0) {
+      splitColumnLines++;
+    } else if (leftItems.length > 0) {
+      leftOnlyBody++;
+    } else if (rightItems.length > 0) {
+      rightOnlyBody++;
+    }
+  }
+
+  const isTwoColumnProse =
+    bodyLineCount >= 12 &&
+    crossingGutterLines <= Math.floor(bodyLineCount * 0.15) &&
+    splitColumnLines >= 6 &&
+    splitColumnLines + leftOnlyBody >= 8 &&
+    splitColumnLines + rightOnlyBody >= 8;
+
   const lines: RawPageLine[] = [];
   let pageChars = 0;
 
-  for (const group of lineGroups) {
-    group.items.sort((a, b) => a.x - b.x);
-    let lineText = '';
-    let prevXEnd: number | null = null;
-    let prevFontSize = 10;
-    let prevHadTrailingSpace = false;
+  if (isTwoColumnProse) {
+    const topHeaderLines: RawPageLine[] = [];
+    const bodyLines: RawPageLine[] = [];
+    let leftLines: RawPageLine[] = [];
+    let rightLines: RawPageLine[] = [];
+    const bottomFooterLines: RawPageLine[] = [];
 
-    for (const item of group.items) {
-      const hasLeadingSpace = /^\s/.test(item.str);
-      const hasTrailingSpace = /\s$/.test(item.str);
-      const trimmed = item.str.trim();
-      if (!trimmed) continue;
+    const flushColumns = () => {
+      if (leftLines.length > 0 || rightLines.length > 0) {
+        bodyLines.push(...leftLines, ...rightLines);
+        leftLines = [];
+        rightLines = [];
+      }
+    };
 
-      if (prevXEnd !== null) {
-        const gap = item.x - prevXEnd;
-        const spaceThreshold = Math.max(2.0, Math.min(prevFontSize, item.fontSize) * 0.25);
-        if (
-          (prevHadTrailingSpace || hasLeadingSpace || gap > spaceThreshold) &&
-          !lineText.endsWith(' ')
-        ) {
-          lineText += ' ';
-        }
+    for (const group of lineGroups) {
+      const yPct = Math.max(0, Math.min(1, 1 - group.y / (pageHeight || 792)));
+      if (yPct <= 0.09 || yPct >= 0.91) {
+        const lineText = joinLineItems(group.items, false);
+        if (!lineText) continue;
+        pageChars += lineText.length;
+        const entry = { page: pageNum, yPct, text: lineText };
+        if (yPct <= 0.09) topHeaderLines.push(entry);
+        else bottomFooterLines.push(entry);
+        continue;
       }
 
-      lineText += trimmed;
-      prevXEnd = item.x + item.width;
-      prevFontSize = item.fontSize;
-      prevHadTrailingSpace = hasTrailingSpace;
+      const hasCrossing = group.items.some(
+        (it) => it.x < gutterLeft && it.x + it.width > gutterRight
+      );
+      if (hasCrossing) {
+        flushColumns();
+        const fullText = joinLineItems(group.items, false);
+        if (fullText) {
+          pageChars += fullText.length;
+          bodyLines.push({ page: pageNum, yPct, text: fullText });
+        }
+        continue;
+      }
+
+      const leftItems = group.items.filter((it) => it.x + it.width <= gutterRight);
+      const rightItems = group.items.filter((it) => it.x >= gutterLeft);
+      if (leftItems.length > 0) {
+        const lt = joinLineItems(leftItems, false);
+        if (lt) {
+          pageChars += lt.length;
+          leftLines.push({ page: pageNum, yPct, text: lt });
+        }
+      }
+      if (rightItems.length > 0) {
+        const rt = joinLineItems(rightItems, false);
+        if (rt) {
+          pageChars += rt.length;
+          rightLines.push({ page: pageNum, yPct, text: rt });
+        }
+      }
     }
 
-    lineText = lineText.replace(/\s+/g, ' ').trim();
+    flushColumns();
+    lines.push(...topHeaderLines, ...bodyLines, ...bottomFooterLines);
+    return { lines, pageChars };
+  }
+
+  for (const group of lineGroups) {
+    const yPct = Math.max(0, Math.min(1, 1 - group.y / (pageHeight || 792)));
+    const isBodyLine = yPct > 0.1 && yPct < 0.9;
+    const lineText = joinLineItems(group.items, isBodyLine);
     if (!lineText) continue;
 
     pageChars += lineText.length;
-    const yPct = Math.max(0, Math.min(1, 1 - group.y / (pageHeight || 792)));
     lines.push({
       page: pageNum,
       yPct,
@@ -210,7 +337,8 @@ export function buildParagraphsFromLines(lines: string[]): string[] {
       /^\d+\.\d+(?:\.\d+)?\s+/.test(line) ||
       /^[A-Z]\.\s+/.test(line) ||
       /^\d+\)\s+/.test(line) ||
-      /^[•\-*]\s+/.test(line)
+      /^[•\-*]\s+/.test(line) ||
+      /^(?:ITEM\s*(?:NO\.?|#)?\s*\d+|AD\d*[-_#]?\d+)\s*[:\-–—]/i.test(line)
     );
   };
 

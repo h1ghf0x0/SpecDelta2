@@ -245,7 +245,7 @@ export function SpecSplitter({ onNavigateWithDivision }: SpecSplitterProps) {
               </button>
               <div className="flex items-center gap-2 text-xs text-slate-600 px-1">
                 <ShieldCheck className="w-4 h-4 text-[#15803D] shrink-0" />
-                <span>100% Private — PDF slicing runs locally on your device.</span>
+                <span>Local Web Worker — PDF slicing runs on your device; nothing is uploaded.</span>
               </div>
             </div>
           </div>

@@ -118,7 +118,15 @@ function renderRouteSeoHtml(
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
+app.disable('x-powered-by');
 app.set('trust proxy', 1);
+
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
 
 function resolveCanonicalOrigin(): string {
   const raw = (process.env.APP_URL ?? '').trim().replace(/\/+$/, '');
@@ -140,6 +148,26 @@ function resolveCanonicalOrigin(): string {
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 12;
 const ipRequestTimestamps = new Map<string, number[]>();
+
+// NOTE: In-memory counters protect single-instance deployments; multi-replica production should swap to a shared Redis counter.
+const rawDailyCap = Number(process.env.SCOPE_BRIEF_DAILY_CAP);
+const SCOPE_BRIEF_DAILY_CAP =
+  Number.isFinite(rawDailyCap) && rawDailyCap > 0 ? Math.floor(rawDailyCap) : 200;
+let dailyCapDate = new Date().toISOString().slice(0, 10);
+let dailyRequestCount = 0;
+
+function checkDailyQuota(): boolean {
+  const today = new Date().toISOString().slice(0, 10);
+  if (today !== dailyCapDate) {
+    dailyCapDate = today;
+    dailyRequestCount = 0;
+  }
+  if (dailyRequestCount >= SCOPE_BRIEF_DAILY_CAP) {
+    return false;
+  }
+  dailyRequestCount += 1;
+  return true;
+}
 
 function checkScopeBriefRateLimit(ip: string): { allowed: boolean; retryAfterSeconds: number } {
   const now = Date.now();
@@ -167,7 +195,110 @@ function checkScopeBriefRateLimit(ip: string): { allowed: boolean; retryAfterSec
   return { allowed: true, retryAfterSeconds: 0 };
 }
 
+const VALID_INPUT_STATUSES = new Set(['modified', 'added', 'deleted']);
+
+function validateScopeBriefPayload(
+  body: unknown
+): { ok: true; sections: SectionDiffInput[]; totalChangedCount: number } | { ok: false; error: string } {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return { ok: false, error: 'Request body must be a JSON object.' };
+  }
+  const obj = body as Record<string, unknown>;
+  if (!Array.isArray(obj.sections) || obj.sections.length === 0) {
+    return { ok: false, error: 'sections must be a non-empty array of changed specification sections.' };
+  }
+  if (obj.sections.length > 200) {
+    return { ok: false, error: 'sections exceeds the maximum batch size of 200 sections.' };
+  }
+
+  const sanitizedSections: SectionDiffInput[] = [];
+  for (let i = 0; i < obj.sections.length; i++) {
+    const sec = obj.sections[i];
+    if (!sec || typeof sec !== 'object' || Array.isArray(sec)) {
+      return { ok: false, error: `sections[${i}] must be an object.` };
+    }
+    const s = sec as Record<string, unknown>;
+    if (typeof s.sectionCode !== 'string' || s.sectionCode.trim().length === 0 || s.sectionCode.length > 40) {
+      return { ok: false, error: `sections[${i}].sectionCode must be a valid non-empty string.` };
+    }
+    if (typeof s.division !== 'string' || s.division.length > 120) {
+      return { ok: false, error: `sections[${i}].division must be a string.` };
+    }
+    if (typeof s.title !== 'string' || s.title.length > 300) {
+      return { ok: false, error: `sections[${i}].title must be a string.` };
+    }
+    if (typeof s.status !== 'string' || !VALID_INPUT_STATUSES.has(s.status)) {
+      return { ok: false, error: `sections[${i}].status must be modified, added, or deleted.` };
+    }
+    if (!Array.isArray(s.changedParagraphs)) {
+      return { ok: false, error: `sections[${i}].changedParagraphs must be an array.` };
+    }
+
+    const cleanParagraphs: ChangedParagraphInput[] = [];
+    for (let j = 0; j < s.changedParagraphs.length; j++) {
+      const para = s.changedParagraphs[j];
+      if (!para || typeof para !== 'object' || Array.isArray(para)) {
+        return { ok: false, error: `sections[${i}].changedParagraphs[${j}] must be an object.` };
+      }
+      const p = para as Record<string, unknown>;
+      if (typeof p.oldText !== 'string' || typeof p.newText !== 'string') {
+        return {
+          ok: false,
+          error: `sections[${i}].changedParagraphs[${j}] must include string oldText and newText.`,
+        };
+      }
+      if (!Array.isArray(p.riskFlags) || !p.riskFlags.every((rf) => typeof rf === 'string')) {
+        return {
+          ok: false,
+          error: `sections[${i}].changedParagraphs[${j}].riskFlags must be an array of strings.`,
+        };
+      }
+      cleanParagraphs.push({
+        oldText: p.oldText,
+        newText: p.newText,
+        riskFlags: p.riskFlags.slice(0, 20),
+      });
+    }
+
+    sanitizedSections.push({
+      sectionCode: s.sectionCode.trim(),
+      division: s.division.trim(),
+      title: s.title.trim(),
+      status: s.status as SectionDiffInput['status'],
+      changedParagraphs: cleanParagraphs,
+    });
+  }
+
+  const totalChangedCount =
+    typeof obj.totalChangedCount === 'number' &&
+    Number.isFinite(obj.totalChangedCount) &&
+    obj.totalChangedCount >= sanitizedSections.length
+      ? Math.round(obj.totalChangedCount)
+      : sanitizedSections.length;
+
+  return { ok: true, sections: sanitizedSections, totalChangedCount };
+}
+
 app.use(express.json({ limit: '2mb' }));
+
+app.use(
+  (
+    err: unknown,
+    _req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    if (
+      err instanceof SyntaxError &&
+      'status' in err &&
+      (err as { status?: number }).status === 400
+    ) {
+      res.status(400).json({ error: 'Invalid JSON request body.' });
+      return;
+    }
+    next(err);
+  }
+);
 
 app.post('/api/scope-brief', async (req, res) => {
   try {
@@ -181,6 +312,12 @@ app.post('/api/scope-brief', async (req, res) => {
       return;
     }
 
+    const validation = validateScopeBriefPayload(req.body);
+    if (!validation.ok) {
+      res.status(400).json({ error: validation.error });
+      return;
+    }
+
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
       res.status(400).json({
@@ -190,16 +327,15 @@ app.post('/api/scope-brief', async (req, res) => {
       return;
     }
 
-    const sections = req.body?.sections as SectionDiffInput[] | undefined;
-    if (!Array.isArray(sections) || sections.length === 0) {
-      res.status(400).json({ error: 'No changed specification sections provided.' });
+    if (!checkDailyQuota()) {
+      res.status(429).json({
+        error:
+          'Daily AI Scope Brief quota reached for this server instance. Continue using local deterministic risk flags or retry tomorrow.',
+      });
       return;
     }
 
-    const totalChangedCount =
-      typeof req.body?.totalChangedCount === 'number' && req.body.totalChangedCount >= sections.length
-        ? Math.round(req.body.totalChangedCount)
-        : sections.length;
+    const { sections, totalChangedCount } = validation;
 
     // Prioritize highest-risk and largest-delta sections before capping payload to 25
     const ranked = [...sections].sort((a, b) => {
@@ -241,63 +377,102 @@ Do not invent sections or values that are not present in the provided JSON.
 Changed Excerpts:
 ${JSON.stringify(condensed, null, 2)}`;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-4-hydrogen',
-      contents: prompt,
-      config: {
-        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
-        systemInstruction:
-          'Return concise, concrete estimator guidance grounded strictly in the supplied changed specification excerpts. Keep the executive summary under 45 words and produce up to 5 actionable bullets.',
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            executiveSummary: {
-              type: Type.STRING,
-              description: 'One concise 1-2 sentence bid-day summary of overall cost and scope exposure.',
-            },
-            bullets: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  sectionCode: {
-                    type: Type.STRING,
-                    description: 'CSI section code such as 03 30 00 or 08 71 00.',
-                  },
-                  impactCategory: {
-                    type: Type.STRING,
-                    description: 'Short category like Material Upgrade, Scope Shift, Allowance, Warranty, or Lead Time.',
-                  },
-                  headline: {
-                    type: Type.STRING,
-                    description: 'Crisp 6-10 word estimator takeaway.',
-                  },
-                  detail: {
-                    type: Type.STRING,
-                    description: 'Specific quantitative or contractual delta from old to new text.',
-                  },
+    const requestConfig = {
+      thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+      systemInstruction:
+        'Return concise, concrete estimator guidance grounded strictly in the supplied changed specification excerpts. Keep the executive summary under 45 words and produce up to 5 actionable bullets.',
+      responseMimeType: 'application/json',
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          executiveSummary: {
+            type: Type.STRING,
+            description: 'One concise 1-2 sentence bid-day summary of overall cost and scope exposure.',
+          },
+          bullets: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                sectionCode: {
+                  type: Type.STRING,
+                  description: 'CSI section code such as 03 30 00 or 08 71 00.',
                 },
-                required: ['sectionCode', 'impactCategory', 'headline', 'detail'],
+                impactCategory: {
+                  type: Type.STRING,
+                  description: 'Short category like Material Upgrade, Scope Shift, Allowance, Warranty, or Lead Time.',
+                },
+                headline: {
+                  type: Type.STRING,
+                  description: 'Crisp 6-10 word estimator takeaway.',
+                },
+                detail: {
+                  type: Type.STRING,
+                  description: 'Specific quantitative or contractual delta from old to new text.',
+                },
               },
+              required: ['sectionCode', 'impactCategory', 'headline', 'detail'],
             },
           },
-          required: ['executiveSummary', 'bullets'],
         },
+        required: ['executiveSummary', 'bullets'],
       },
-    });
+    };
 
-    const raw = (response.text ?? '{}').trim();
-    const parsed = JSON.parse(raw);
+    const modelsToTry = ['gemini-4-hydrogen', 'gemini-2.5-flash'] as const;
+    let responseText = '';
+    let lastModelErr: unknown = null;
+
+    for (const model of modelsToTry) {
+      try {
+        const response = await ai.models.generateContent({
+          model,
+          contents: prompt,
+          config: requestConfig,
+        });
+        responseText = (response.text ?? '{}').trim();
+        lastModelErr = null;
+        break;
+      } catch (modelErr: unknown) {
+        lastModelErr = modelErr;
+        const msg = modelErr instanceof Error ? modelErr.message : '';
+        if (msg.includes('403') || msg.includes('PERMISSION_DENIED') || msg.includes('API_KEY_INVALID')) {
+          throw modelErr;
+        }
+      }
+    }
+
+    if (lastModelErr) {
+      throw lastModelErr;
+    }
+
+    const parsed = JSON.parse(responseText || '{}') as Record<string, unknown>;
     res.json({
       ...parsed,
       sectionsSentCount: condensed.length,
       totalChangedSections: totalChangedCount,
     });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Failed to generate Scope Impact Brief.';
-    const status = message.includes('403') || message.includes('PERMISSION_DENIED') ? 403 : 500;
-    res.status(status).json({ error: message });
+    const rawMsg = err instanceof Error ? err.message : 'Unknown error';
+    console.error('[scope-brief] generation failed:', rawMsg);
+    if (rawMsg.includes('403') || rawMsg.includes('PERMISSION_DENIED') || rawMsg.includes('API_KEY_INVALID')) {
+      res.status(403).json({
+        error:
+          'Gemini API authorization failed. Verify GEMINI_API_KEY in server configuration or continue using local deterministic risk flags.',
+      });
+      return;
+    }
+    if (rawMsg.includes('429') || rawMsg.includes('RESOURCE_EXHAUSTED')) {
+      res.status(429).json({
+        error:
+          'Upstream Gemini rate limit reached. Please retry shortly or continue using local deterministic risk flags.',
+      });
+      return;
+    }
+    res.status(502).json({
+      error:
+        'Unable to generate AI Scope Impact Brief right now. Continue using local deterministic risk flags.',
+    });
   }
 });
 

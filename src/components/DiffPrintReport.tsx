@@ -25,6 +25,13 @@ export function DiffPrintReport({
         <div className="mt-1 text-xs text-slate-600 font-mono">
           Baseline: {diagnostics.oldFileName} ({diagnostics.oldPageCount} pp.) · Revised:{' '}
           {diagnostics.newFileName} ({diagnostics.newPageCount} pp.) · {allChangedSections.length} Changed Sections
+          {diagnostics.resolvedMode && diagnostics.resolvedMode !== 'conformed'
+            ? ` · Mode: ${
+                diagnostics.resolvedMode === 'narrative-addendum'
+                  ? 'Narrative Addendum'
+                  : 'Partial Reissue'
+              } (${diagnostics.notReissuedCount ?? 0} unmentioned baseline sections preserved unchanged)`
+            : ''}
         </div>
       </div>
 
@@ -64,7 +71,10 @@ export function DiffPrintReport({
                 {sec.title}
               </div>
               <div className="text-xs font-mono uppercase font-semibold">
-                {sec.status} · {reviewedCodes.has(sec.sectionCode) ? 'REVIEWED' : 'PENDING'} · pp. {sec.oldPageRange} → {sec.newPageRange}
+                {sec.status}
+                {sec.narrativeApplied ? ' (NARRATIVE PATCH)' : ''} ·{' '}
+                {reviewedCodes.has(sec.sectionCode) ? 'REVIEWED' : 'PENDING'} · pp.{' '}
+                {sec.oldPageRange} → {sec.newPageRange}
               </div>
             </div>
 
@@ -79,12 +89,18 @@ export function DiffPrintReport({
 
             {sec.riskFlags.length > 0 && (
               <div className="text-xs font-mono text-amber-900 bg-amber-50 px-2.5 py-1.5 rounded">
+                {sec.riskSeverity ? `[${sec.riskSeverity.toUpperCase()}] ` : ''}
                 Risk Flags: {sec.riskFlags.join(' · ')}
               </div>
             )}
 
             {sec.changedParagraphs.map((para, pIdx) => (
               <div key={pIdx} className="text-xs leading-relaxed border-t border-slate-100 pt-2">
+                {para.narrativeSource && (
+                  <div className="mb-1 text-[11px] font-mono text-[#1E40AF] font-semibold">
+                    {para.narrativeSource}
+                  </div>
+                )}
                 {para.tokens.map((tok, tIdx) => {
                   if (tok.op === 0) return <span key={tIdx}>{tok.text}</span>;
                   if (tok.op === -1) {

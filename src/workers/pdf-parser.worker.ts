@@ -143,12 +143,14 @@ async function extractLinesWithCoordinates(
       const page = await pdf.getPage(p);
       const viewport = page.getViewport({ scale: 1.0 });
       const pageHeight = viewport.height || 792;
+      const pageWidth = viewport.width || 612;
       const textContent = await page.getTextContent();
 
       const { lines: pageLines, pageChars } = assemblePageLinesFromSpans(
         textContent.items,
         p,
-        pageHeight
+        pageHeight,
+        pageWidth
       );
       totalChars += pageChars;
       allLines.push(...pageLines);

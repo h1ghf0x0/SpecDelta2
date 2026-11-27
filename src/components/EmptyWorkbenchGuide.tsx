@@ -78,7 +78,7 @@ export function EmptyWorkbenchGuide({ onNavigate }: EmptyWorkbenchGuideProps) {
               Only bidding one trade? Pull your CSI Division out first.
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Use the CSI Spec Book Splitter to extract Division 03, 08, 23, or 26 out of an 800-page GC Project Manual into a clean standalone PDF—your bid documents never leave your computer.
+              Use the CSI Spec Book Splitter to extract Division 03, 08, 23, or 26 out of an 800-page GC Project Manual into a clean standalone PDF directly in your browser.
             </p>
 
             <div className="pt-4 border-t border-slate-200 grid grid-cols-2 gap-4">
@@ -92,10 +92,10 @@ export function EmptyWorkbenchGuide({ onNavigate }: EmptyWorkbenchGuideProps) {
               </div>
               <div>
                 <div className="font-mono text-lg font-bold text-[#1E40AF] tabular-nums">
-                  On-Device
+                  Local-First
                 </div>
                 <div className="text-xs text-slate-500 mt-0.5">
-                  Zero PDF bytes leave your browser
+                  Full PDFs stay local; AI brief opt-in
                 </div>
               </div>
             </div>

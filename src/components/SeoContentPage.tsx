@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { ArrowRight, ChevronDown, ChevronUp, FileSpreadsheet } from 'lucide-react';
-import { SEO_PAGES, TRADE_GUIDE_ROUTES } from '../data/seoContent';
+import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { SEO_PAGES } from '../data/seoContent';
+import { TRADE_GUIDE_ROUTES } from '../data/seoRoutesMeta';
 import type { AppRoute } from '../types/spec';
 
 interface SeoContentPageProps {
@@ -9,15 +10,73 @@ interface SeoContentPageProps {
   onRunSampleDiff: (divisionCode?: string) => void;
 }
 
-const IMAGE_PATHS = {
-  desk: '/src/assets/images/spec_manual_desk_1795647963117.jpg',
-  blueprint: '/src/assets/images/construction_blueprint_detail_1795647962949.jpg',
-};
+function SpecIllustration({ variant, label }: { variant: 'desk' | 'blueprint'; label: string }) {
+  return (
+    <div
+      role="img"
+      aria-label={label}
+      className="w-full h-full min-h-[240px] bg-slate-900 text-slate-100 p-5 flex flex-col justify-between select-none"
+    >
+      <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+        <span>{variant === 'desk' ? 'CSI SPEC LEDGER' : 'DRAWING & SCHEDULE VIEW'}</span>
+        <span className="text-amber-400">{variant === 'desk' ? 'ADDENDUM DELTA' : 'SECTION SYNC'}</span>
+      </div>
+      <svg viewBox="0 0 360 150" className="w-full h-auto my-2" aria-hidden="true">
+        <defs>
+          <pattern id="grid" width="18" height="18" patternUnits="userSpaceOnUse">
+            <path d="M 18 0 L 0 0 0 18" fill="none" stroke="#1E293B" strokeWidth="1" />
+          </pattern>
+        </defs>
+        <rect width="360" height="150" rx="6" fill="url(#grid)" stroke="#334155" strokeWidth="1" />
+        {variant === 'desk' ? (
+          <>
+            <rect x="20" y="20" width="145" height="110" rx="4" fill="#0F172A" stroke="#475569" />
+            <rect x="30" y="32" width="70" height="7" rx="2" fill="#3B82F6" />
+            <rect x="30" y="48" width="120" height="5" rx="2" fill="#334155" />
+            <rect x="30" y="60" width="95" height="5" rx="2" fill="#EF4444" opacity="0.8" />
+            <rect x="30" y="72" width="115" height="5" rx="2" fill="#334155" />
+            <rect x="30" y="88" width="105" height="5" rx="2" fill="#334155" />
+            <rect x="30" y="100" width="80" height="5" rx="2" fill="#F59E0B" opacity="0.85" />
+            <rect x="195" y="20" width="145" height="110" rx="4" fill="#0F172A" stroke="#2563EB" />
+            <rect x="205" y="32" width="76" height="7" rx="2" fill="#60A5FA" />
+            <rect x="205" y="48" width="120" height="5" rx="2" fill="#334155" />
+            <rect x="205" y="60" width="102" height="5" rx="2" fill="#10B981" opacity="0.9" />
+            <rect x="205" y="72" width="115" height="5" rx="2" fill="#334155" />
+            <rect x="205" y="88" width="105" height="5" rx="2" fill="#334155" />
+            <rect x="205" y="100" width="92" height="5" rx="2" fill="#F59E0B" opacity="0.9" />
+            <path d="M170 62 L190 62" stroke="#94A3B8" strokeWidth="1.5" strokeDasharray="3 2" />
+            <path d="M170 102 L190 102" stroke="#F59E0B" strokeWidth="1.5" />
+          </>
+        ) : (
+          <>
+            <rect x="22" y="18" width="316" height="114" rx="4" fill="#0F172A" stroke="#3B82F6" opacity="0.9" />
+            <line x1="22" y1="42" x2="338" y2="42" stroke="#1E3A8A" strokeWidth="1" />
+            <line x1="120" y1="42" x2="120" y2="132" stroke="#1E3A8A" strokeWidth="1" />
+            <line x1="230" y1="42" x2="230" y2="132" stroke="#1E3A8A" strokeWidth="1" />
+            <rect x="34" y="26" width="95" height="8" rx="2" fill="#60A5FA" />
+            <rect x="34" y="54" width="72" height="6" rx="2" fill="#475569" />
+            <rect x="34" y="70" width="60" height="6" rx="2" fill="#475569" />
+            <rect x="34" y="86" width="68" height="6" rx="2" fill="#F59E0B" />
+            <rect x="134" y="54" width="82" height="6" rx="2" fill="#EF4444" opacity="0.85" />
+            <rect x="134" y="70" width="74" height="6" rx="2" fill="#10B981" opacity="0.9" />
+            <rect x="134" y="86" width="64" height="6" rx="2" fill="#475569" />
+            <rect x="244" y="54" width="78" height="6" rx="2" fill="#3B82F6" />
+            <rect x="244" y="70" width="66" height="6" rx="2" fill="#F59E0B" />
+            <rect x="244" y="86" width="72" height="6" rx="2" fill="#10B981" />
+          </>
+        )}
+      </svg>
+      <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+        <span>03 30 00 · 08 71 00 · 26 24 13</span>
+        <span className="text-emerald-400">LOCAL WORKER PARSED</span>
+      </div>
+    </div>
+  );
+}
 
 export function SeoContentPage({ route, onNavigate, onRunSampleDiff }: SeoContentPageProps) {
   const page = SEO_PAGES[route];
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [imgError, setImgError] = useState(false);
 
   const isTradeGuide = page.category === 'Trade Guide';
   const isComparison = page.category === 'Comparison' || page.category === 'Workflow Guide';
@@ -133,21 +192,8 @@ export function SeoContentPage({ route, onNavigate, onRunSampleDiff }: SeoConten
             </div>
 
             <div className="lg:col-span-5">
-              <div className="h-full min-h-[240px] rounded-lg border border-slate-200 bg-white overflow-hidden">
-                {!imgError ? (
-                  <img
-                    src={IMAGE_PATHS[page.heroImage]}
-                    alt={page.heroImageAlt}
-                    referrerPolicy="no-referrer"
-                    onError={() => setImgError(true)}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full min-h-[240px] bg-gradient-to-br from-slate-100 to-blue-50 flex flex-col items-center justify-center p-6 text-center">
-                    <FileSpreadsheet className="w-8 h-8 text-[#1E40AF] mb-2" />
-                    <div className="text-sm font-semibold text-slate-800">{page.eyebrow}</div>
-                  </div>
-                )}
+              <div className="h-full min-h-[240px] rounded-lg border border-slate-200 bg-slate-900 overflow-hidden">
+                <SpecIllustration variant={page.heroImage} label={page.heroImageAlt} />
               </div>
             </div>
           </div>

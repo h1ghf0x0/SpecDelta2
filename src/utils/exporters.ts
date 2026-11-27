@@ -104,7 +104,7 @@ export function buildChangeLogRows(
   }
 
   for (const sec of results) {
-    if (sec.status === 'unchanged' && !sec.renumberedFrom) continue;
+    if ((sec.status === 'unchanged' || sec.status === 'not-reissued') && !sec.renumberedFrom) continue;
     const reviewedLabel = reviewedCodes?.has(sec.sectionCode) ? 'Reviewed' : 'Pending';
     const divLabel = `${sec.division} - ${sec.divisionTitle}`;
     const scanWarning = formatSectionScanWarning(sec.oldPageRange, sec.newPageRange, scanInfo);

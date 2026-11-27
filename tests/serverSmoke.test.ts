@@ -77,4 +77,36 @@ test('npm start (tsx server.ts) boots production build, uses APP_URL canonical, 
   const notFoundHtml = await notFoundRes.text();
   assert.equal(notFoundRes.status, 404);
   assert.ok(notFoundHtml.includes('<meta name="robots" content="noindex, nofollow" />'));
+  assert.equal(notFoundRes.headers.get('x-content-type-options'), 'nosniff');
+  assert.equal(notFoundRes.headers.get('x-powered-by'), null);
+
+  // Malformed JSON must return clean 400 JSON instead of HTML stack trace
+  const badJsonRes = await fetch(`http://127.0.0.1:${testPort}/api/scope-brief`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: '{bad json',
+  });
+  assert.equal(badJsonRes.status, 400);
+  const badJsonBody = (await badJsonRes.json()) as { error?: string };
+  assert.equal(badJsonBody.error, 'Invalid JSON request body.');
+
+  // Missing riskFlags in changedParagraphs must return 400 validation error, never 500
+  const invalidSchemaRes = await fetch(`http://127.0.0.1:${testPort}/api/scope-brief`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      sections: [
+        {
+          sectionCode: '03 30 00',
+          division: '03 - Concrete',
+          title: 'CAST-IN-PLACE CONCRETE',
+          status: 'modified',
+          changedParagraphs: [{ oldText: '3000 psi', newText: '4000 psi' }],
+        },
+      ],
+    }),
+  });
+  assert.equal(invalidSchemaRes.status, 400);
+  const invalidSchemaBody = (await invalidSchemaRes.json()) as { error?: string };
+  assert.ok(invalidSchemaBody.error?.includes('riskFlags'));
 });

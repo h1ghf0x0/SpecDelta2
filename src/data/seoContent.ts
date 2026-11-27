@@ -65,7 +65,7 @@ export const SEO_PAGES: Record<Exclude<AppRoute, '/' | '/split-spec-book'>, SeoP
       {
         step: 'Load Original Bid Set & Addendum PDF',
         description:
-          'Drop both Project Manuals into SpecDelta. All parsing runs locally inside a browser Web Worker—your NDA bid specs never leave your workstation.',
+          'Drop both Project Manuals (or a partial/narrative addendum) into SpecDelta. Local Web Worker parsing keeps full manuals in your browser unless you opt in to the AI brief.',
       },
       {
         step: 'Auto-Strip Headers, Footers & Page Numbers',
@@ -254,11 +254,11 @@ export const SEO_PAGES: Record<Exclude<AppRoute, '/' | '/split-spec-book'>, SeoP
     category: 'Benchmark',
     metaTitle: 'Accuracy on Real Project Manuals | SpecDelta',
     metaDescription:
-      '58 of 59 sealed and 109 of 110 held-out planted edits caught; 0 of 244 sealed and 0 of 644 held-out sections falsely flagged when pages shifted.',
-    eyebrow: 'Accuracy Study · Real Public Project Manuals (9,776 Pages Tested)',
-    headline: '58 of 59 Sealed & 109 of 110 Held-Out Changes Caught. 0 False Page-Shift Alarms.',
+      'Synthetic regression tests on public manuals: 58 of 59 sealed and 109 of 110 held-out planted edits caught; 0 of 244 sealed and 0 of 644 held-out sections falsely flagged when pages shifted.',
+    eyebrow: 'Public-Manual Parsing & Synthetic Planted-Edit Regression Study (9,776 Pages)',
+    headline: '58 of 59 Sealed & 109 of 110 Held-Out Planted Edits Caught. 0 False Page-Shift Alarms.',
     summary:
-      'Across 6 untouched public manuals (1,734 pages) and 10 held-out manuals (5,269 pages): 58 of 59 sealed and 109 of 110 held-out planted changes caught ("planted" means real-clause edits we inserted ourselves so we know the exact right answer), and 0 of 244 sealed plus 0 of 644 held-out sections falsely flagged when only page numbers moved (full Clopper-Pearson 95% confidence intervals and raw counts below). Scanned sheets without a text layer aren’t OCR’d and are flagged to check manually.',
+      'Evaluated on 6 untouched public manuals (1,734 pages) and 10 held-out manuals (5,269 pages): bookmark section recall is measured against each PDF’s own outline, while diff accuracy uses deterministic synthetic planted edits inserted into real clauses (no independent human-labeled real addendum corpus exists yet). Scanned sheets without a text layer aren’t OCR’d and are flagged for manual review.',
     heroImage: 'desk',
     heroImageAlt: 'Specification benchmark desk setup with Project Manual and structural sheets',
     keyGotchas: [
@@ -745,12 +745,3 @@ export const SEO_PAGES: Record<Exclude<AppRoute, '/' | '/split-spec-book'>, SeoP
     ctaTarget: '/',
   },
 };
-
-export const TRADE_GUIDE_ROUTES: Array<{ route: AppRoute; code: string; label: string }> = [
-  { route: '/compare-division-03-concrete-specs', code: '03', label: 'Concrete' },
-  { route: '/compare-division-07-thermal-moisture-specs', code: '07', label: 'Thermal & Moisture' },
-  { route: '/compare-division-08-doors-hardware-specs', code: '08', label: 'Doors & Hardware' },
-  { route: '/compare-division-09-finishes-specs', code: '09', label: 'Finishes' },
-  { route: '/compare-division-23-hvac-specs', code: '23', label: 'HVAC' },
-  { route: '/compare-division-26-electrical-specs', code: '26', label: 'Electrical' },
-];
